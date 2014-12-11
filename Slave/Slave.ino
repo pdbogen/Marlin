@@ -76,6 +76,9 @@ float eRInf[HOT_ENDS];
 char dudTempCount[HOT_ENDS];
 char ledBlinkCount;
 
+void stepExtruder(int8_t drive);
+inline void debugMessage(char* s1);
+
 /* *******************************************************************
 
   The master clock interrupt

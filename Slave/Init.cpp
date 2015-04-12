@@ -10,6 +10,10 @@
 void initialize_serial() {
 	DEBUG_IO.begin(250000);
 	MASTER.begin(250000);
+
+	// Flush the MASTER serial hardware buffer
+	while( MASTER.available() )
+		MASTER.read();
 }
 
 void initialize_temperatures() {

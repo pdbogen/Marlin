@@ -11,4 +11,6 @@ MONITOR_BAUDRATE = 115200
 EXTRA_FLAGS    = -std=c++11
 AVRDUDE_OPTS   = -V
 
+USER_LIB_PATH := $(realpath ../common)
+
 include /usr/share/arduino/Arduino.mk

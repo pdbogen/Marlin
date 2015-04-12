@@ -50,8 +50,8 @@ FORCE_INLINE void store_char(unsigned char c) {
 #if defined(M_USARTx_RX_vect)
   // fixed by Mark Sproul this is on the 644/644p
   //SIGNAL(SIG_USART_RECV)
-  SIGNAL(M_USARTx_RX_vect) {
-    unsigned char c  =  M_UDRx;
+  SIGNAL(M_USARTx_RX_vect(SERIAL_PORT)) {
+    unsigned char c  =  M_UDRx(SERIAL_PORT);
     store_char(c);
   }
 #endif
@@ -76,26 +76,26 @@ void MarlinSerial::begin(long baud) {
   #endif
 
   if (useU2X) {
-    M_UCSRxA = BIT(M_U2Xx);
+    M_UCSRxA(SERIAL_PORT) = BIT(M_U2Xx(SERIAL_PORT));
     baud_setting = (F_CPU / 4 / baud - 1) / 2;
   } else {
-    M_UCSRxA = 0;
+    M_UCSRxA(SERIAL_PORT) = 0;
     baud_setting = (F_CPU / 8 / baud - 1) / 2;
   }
 
   // assign the baud_setting, a.k.a. ubbr (USART Baud Rate Register)
-  M_UBRRxH = baud_setting >> 8;
-  M_UBRRxL = baud_setting;
+  M_UBRRxH(SERIAL_PORT) = baud_setting >> 8;
+  M_UBRRxL(SERIAL_PORT) = baud_setting;
 
-  sbi(M_UCSRxB, M_RXENx);
-  sbi(M_UCSRxB, M_TXENx);
-  sbi(M_UCSRxB, M_RXCIEx);
+  sbi(M_UCSRxB(SERIAL_PORT), M_RXENx(SERIAL_PORT));
+  sbi(M_UCSRxB(SERIAL_PORT), M_TXENx(SERIAL_PORT));
+  sbi(M_UCSRxB(SERIAL_PORT), M_RXCIEx(SERIAL_PORT));
 }
 
 void MarlinSerial::end() {
-  cbi(M_UCSRxB, M_RXENx);
-  cbi(M_UCSRxB, M_TXENx);
-  cbi(M_UCSRxB, M_RXCIEx);
+  cbi(M_UCSRxB(SERIAL_PORT), M_RXENx(SERIAL_PORT));
+  cbi(M_UCSRxB(SERIAL_PORT), M_TXENx(SERIAL_PORT));
+  cbi(M_UCSRxB(SERIAL_PORT), M_RXCIEx(SERIAL_PORT));
 }
 
 

@@ -636,6 +636,7 @@ void setup() {
     disableStepperDrivers();
   #endif
 
+  setup_slave_communications();
   MYSERIAL.begin(BAUDRATE);
   SERIAL_PROTOCOLLNPGM("start");
   SERIAL_ECHO_START;

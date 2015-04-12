@@ -1,3 +1,8 @@
+# This Fork
+
+This is a fork of the upstream Marlin firmware, modified for use with RepRapPro's multiextruder printers, which utilize a secondary slave board (physically 
+identical to the first, but used only for controlling additional extruders.)
+
 # Marlin 3D Printer Firmware
 <img align="top" width=175 src="Documentation/Logo/Marlin%20Logo%20GitHub.png" />
  Documentation has moved to [marlinfirmware.org](http://www.marlinfirmware.org).

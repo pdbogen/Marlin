@@ -12,4 +12,9 @@
 
 #define AD_RANGE 1023.0
 
+#define PACKET_QUEUE_SIZE 10
+
+//#define DEBUG_PID
+#define PID_INTERVAL 500 // milliseconds
+
 #endif

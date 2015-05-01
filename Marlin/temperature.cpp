@@ -807,7 +807,7 @@ static void updateTemperaturesFromRawValues() {
   #if ENABLED(HEATER_0_USES_MAX6675)
     current_temperature_raw[0] = read_max6675();
   #endif
-  for (uint8_t e = 0; e < EXTRUDERS; e++) {
+  for(uint8_t e = 0; e < LOCAL_EXTRUDERS; e++) {
     current_temperature[e] = analog2temp(current_temperature_raw[e], e);
   }
   current_temperature_bed = analog2tempBed(current_temperature_bed_raw);
@@ -1124,15 +1124,27 @@ void disable_all_heaters() {
   #endif
 
   #if EXTRUDERS > 1 && HAS_TEMP_1
-    DISABLE_HEATER(1);
+    #if LOCAL_EXTRUDERS > 1
+      DISABLE_HEATER(1);
+    #else
+      //FIXME: DISABLE REMOTE EXTRUDER 1
+    #endif
   #endif
 
   #if EXTRUDERS > 2 && HAS_TEMP_2
-    DISABLE_HEATER(2);
+    #if LOCAL_EXTRUDERS > 2
+      DISABLE_HEATER(2);
+    #else
+      //FIXME: DISABLE REMOTE EXTRUDER 2
+    #endif
   #endif
 
   #if EXTRUDERS > 3 && HAS_TEMP_3
-    DISABLE_HEATER(3);
+    #if LOCAL_EXTRUDERS > 3
+      DISABLE_HEATER(3);
+    #else
+      //FIXME: DISABLE REMOTE EXTRUDER 3
+    #endif
   #endif
 
   #if HAS_TEMP_BED
@@ -1299,13 +1311,13 @@ ISR(TIMER0_COMPB_vect) {
       }
       else WRITE_HEATER_0P(0); // If HEATERS_PARALLEL should apply, change to WRITE_HEATER_0
 
-      #if EXTRUDERS > 1
+      #if LOCAL_EXTRUDERS > 1
         soft_pwm_1 = soft_pwm[1];
         WRITE_HEATER_1(soft_pwm_1 > 0 ? 1 : 0);
-        #if EXTRUDERS > 2
+        #if LOCAL_EXTRUDERS > 2
           soft_pwm_2 = soft_pwm[2];
           WRITE_HEATER_2(soft_pwm_2 > 0 ? 1 : 0);
-          #if EXTRUDERS > 3
+          #if LOCAL_EXTRUDERS > 3
             soft_pwm_3 = soft_pwm[3];
             WRITE_HEATER_3(soft_pwm_3 > 0 ? 1 : 0);
           #endif
@@ -1323,11 +1335,11 @@ ISR(TIMER0_COMPB_vect) {
     }
 
     if (soft_pwm_0 < pwm_count) WRITE_HEATER_0(0);
-    #if EXTRUDERS > 1
+    #if LOCAL_EXTRUDERS > 1
       if (soft_pwm_1 < pwm_count) WRITE_HEATER_1(0);
-      #if EXTRUDERS > 2
+      #if LOCAL_EXTRUDERS > 2
         if (soft_pwm_2 < pwm_count) WRITE_HEATER_2(0);
-        #if EXTRUDERS > 3
+        #if LOCAL_EXTRUDERS > 3
           if (soft_pwm_3 < pwm_count) WRITE_HEATER_3(0);
         #endif
       #endif

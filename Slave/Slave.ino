@@ -2,15 +2,16 @@
 #include "Globals.h"
 #include "Init.h"
 #include "Temperature.h"
+#include "Communications.h"
 
 void setup() {
 	initialize_serial();
 	initialize_temperatures();
-	Serial.print( "Slave board initialized.\n" );  
+	Serial.print( "Slave board initialized.\n" );
 }
 
-void loop() {	
+void loop() {
 	check_hotend_temperatures();
-	// check temperatures
-	// process received commands
+	run_hotend_pid();
+	network_loop();
 }

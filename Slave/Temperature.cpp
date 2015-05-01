@@ -1,9 +1,19 @@
 #include "Temperature.h"
+#include "Communications.h"
 #include "Configuration.h"
 #include "Globals.h"
 
 #include <stdint.h>
 #include <Arduino.h>
+
+void run_hotend_pid() {
+	for( uint8_t i = 0; i < HOT_ENDS; i++ )
+		extruders[i].runPID();
+}
+
+void set_hotend_temperature( uint8_t extruder, float celsius ) {
+	extruders[ extruder ].setTemperature( celsius );
+}
 
 void check_hotend_temperatures() {
 	for( uint8_t i = 0; i < HOT_ENDS; i++ )
@@ -13,7 +23,7 @@ void check_hotend_temperatures() {
 	if( (time - timers[DEBUG_TEMP_TIMER]) >= 1000 ) {
 		timers[DEBUG_TEMP_TIMER] = time;
 		for( uint8_t i = 0; i < HOT_ENDS; i++ ) {
-			Serial.print( "Extruder " ); Serial.print( i ); Serial.print( " temp: " ); Serial.println( extruders[i].temperature );
+			output_queue.enqueue( CMD_REPORT_TEMP, Payload( extruders[i].temperature ) );
 		}
 	}
 }

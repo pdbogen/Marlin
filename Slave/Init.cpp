@@ -2,6 +2,7 @@
 #include "Configuration.h"
 #include "Globals.h"
 #include "Pins.h"
+#include "Communications.h"
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
@@ -9,11 +10,7 @@
 
 void initialize_serial() {
 	DEBUG_IO.begin(250000);
-	MASTER.begin(250000);
-
-	// Flush the MASTER serial hardware buffer
-	while( MASTER.available() )
-		MASTER.read();
+	link_initialize();
 }
 
 void initialize_temperatures() {
@@ -23,6 +20,7 @@ void initialize_temperatures() {
 	for( uint8_t i = 0; i < HOT_ENDS; i++ ) {
 		pinMode( therms[i], INPUT );
 		extruders[i].temp_pin = therms[i];
+		extruders[i].setHeaterPin( heaters[i] );
 		extruders[i].beta     = betas[i];
 		extruders[i].Rs       = rs[i];
 		extruders[i].calculateRInf();

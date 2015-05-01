@@ -636,10 +636,13 @@ void setup() {
     disableStepperDrivers();
   #endif
 
-  setup_slave_communications();
+  link_initialize();
   MYSERIAL.begin(BAUDRATE);
   SERIAL_PROTOCOLLNPGM("start");
   SERIAL_ECHO_START;
+
+  SERIAL_PROTOCOLLNPGM("saying hello to slave");
+  output_queue.enqueue( CMD_PING );
 
   // Check startup - does nothing if bootloader sets MCUSR to 0
   byte mcu = MCUSR;

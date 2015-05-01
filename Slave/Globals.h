@@ -13,13 +13,11 @@
 
 extern Extruder extruders[];
 extern uint8_t therms[];
+extern uint8_t heaters[];
 
 extern unsigned long timers[];
 
 // Global flag set when the buffer has a full command to be processed
 extern uint8_t input_ready;
-
-extern Packet input_packet;
-extern Packet output_packet;
 
 #endif // GLOBALS_H

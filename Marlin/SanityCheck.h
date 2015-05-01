@@ -53,9 +53,9 @@
 /**
  * Options only for EXTRUDERS > 1
  */
-#if EXTRUDERS > 1
+#if LOCAL_EXTRUDERS > 1
 
-  #if EXTRUDERS > 4
+  #if LOCAL_EXTRUDERS > 4
     #error The maximum number of EXTRUDERS in Marlin is 4.
   #endif
 
@@ -247,7 +247,7 @@
  * Dual X Carriage requirements
  */
 #if ENABLED(DUAL_X_CARRIAGE)
-  #if EXTRUDERS == 1 || ENABLED(COREXY) \
+  #if LOCAL_EXTRUDERS == 1 || ENABLED(COREXY) \
       || !HAS_X2_ENABLE || !HAS_X2_STEP || !HAS_X2_DIR \
       || !defined(X2_HOME_POS) || !defined(X2_MIN_POS) || !defined(X2_MAX_POS) \
       || !HAS_X_MAX
@@ -280,7 +280,7 @@
 /**
  * Test Heater, Temp Sensor, and Extruder Pins; Sensor Type must also be set.
  */
-#if EXTRUDERS > 3
+#if LOCAL_EXTRUDERS > 3
   #if !HAS_HEATER_3
     #error HEATER_3_PIN not defined for this board.
   #elif !PIN_EXISTS(TEMP_3)
@@ -290,7 +290,7 @@
   #elif TEMP_SENSOR_3 == 0
     #error TEMP_SENSOR_3 is required with 4 EXTRUDERS.
   #endif
-#elif EXTRUDERS > 2
+#elif LOCAL_EXTRUDERS > 2
   #if !HAS_HEATER_2
     #error HEATER_2_PIN not defined for this board.
   #elif !PIN_EXISTS(TEMP_2)
@@ -300,7 +300,7 @@
   #elif TEMP_SENSOR_2 == 0
     #error TEMP_SENSOR_2 is required with 3 or more EXTRUDERS.
   #endif
-#elif EXTRUDERS > 1
+#elif LOCAL_EXTRUDERS > 1
   #if !PIN_EXISTS(TEMP_1)
     #error TEMP_1_PIN not defined for this board.
   #elif !PIN_EXISTS(E1_STEP) || !PIN_EXISTS(E1_DIR) || !PIN_EXISTS(E1_ENABLE)
@@ -308,14 +308,14 @@
   #endif
 #endif
 
-#if EXTRUDERS > 1 || ENABLED(HEATERS_PARALLEL)
+#if LOCAL_EXTRUDERS > 1 || ENABLED(HEATERS_PARALLEL)
   #if !HAS_HEATER_1
     #error HEATER_1_PIN not defined for this board.
   #endif
 #endif
 
 #if TEMP_SENSOR_1 == 0
-  #if EXTRUDERS > 1
+  #if LOCAL_EXTRUDERS > 1
     #error TEMP_SENSOR_1 is required with 2 or more EXTRUDERS.
   #elif ENABLED(TEMP_SENSOR_1_AS_REDUNDANT)
     #error TEMP_SENSOR_1 is required with TEMP_SENSOR_1_AS_REDUNDANT.

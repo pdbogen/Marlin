@@ -1,0 +1,6 @@
+#ifndef SLAVE_COMMUNICATIONS_H
+#define SLAVE_COMMUNICATIONS_H
+
+
+
+#endif

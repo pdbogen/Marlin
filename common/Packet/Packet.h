@@ -8,7 +8,12 @@
 #define CMD_ACK  0
 #define CMD_PING 1
 #define CMD_REPORT_TEMP 2
-#define CMD_SET_TEMP_0 3
+
+#define CMD_SET_TEMP_0     3
+#define CMD_SET_ENABLE_0   4
+#define CMD_SET_DISABLE_0  5
+#define CMD_SET_DIR_NORM_0 6
+#define CMD_SET_DIR_REV_0  7
 
 #include <stdint.h>
 

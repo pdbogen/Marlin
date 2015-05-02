@@ -19,7 +19,8 @@ void initialize_temperatures() {
 
 	for( uint8_t i = 0; i < HOT_ENDS; i++ ) {
 		pinMode( therms[i], INPUT );
-		extruders[i].temp_pin = therms[i];
+		extruders[i].temp_pin   = therms[i];
+		extruders[i].setEnablePin( enables[i] );
 		extruders[i].setHeaterPin( heaters[i] );
 		extruders[i].beta     = betas[i];
 		extruders[i].Rs       = rs[i];

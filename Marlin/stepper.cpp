@@ -864,16 +864,16 @@ void st_init() {
       Z2_DIR_INIT;
     #endif
   #endif
-  #if HAS_E0_DIR
+  #if HAS_E0_DIR && LOCAL_EXTRUDERS > 0
     E0_DIR_INIT;
   #endif
-  #if HAS_E1_DIR
+  #if HAS_E1_DIR && LOCAL_EXTRUDERS > 1
     E1_DIR_INIT;
   #endif
-  #if HAS_E2_DIR
+  #if HAS_E2_DIR && LOCAL_EXTRUDERS > 2
     E2_DIR_INIT;
   #endif
-  #if HAS_E3_DIR
+  #if HAS_E3_DIR && LOCAL_EXTRUDERS > 3
     E3_DIR_INIT;
   #endif
 
@@ -905,19 +905,19 @@ void st_init() {
       if (!Z_ENABLE_ON) Z2_ENABLE_WRITE(HIGH);
     #endif
   #endif
-  #if HAS_E0_ENABLE
+  #if HAS_E0_ENABLE && LOCAL_EXTRUDERS > 0
     E0_ENABLE_INIT;
     if (!E_ENABLE_ON) E0_ENABLE_WRITE(HIGH);
   #endif
-  #if HAS_E1_ENABLE
+  #if HAS_E1_ENABLE && LOCAL_EXTRUDERS > 1
     E1_ENABLE_INIT;
     if (!E_ENABLE_ON) E1_ENABLE_WRITE(HIGH);
   #endif
-  #if HAS_E2_ENABLE
+  #if HAS_E2_ENABLE && LOCAL_EXTRUDERS > 2
     E2_ENABLE_INIT;
     if (!E_ENABLE_ON) E2_ENABLE_WRITE(HIGH);
   #endif
-  #if HAS_E3_ENABLE
+  #if HAS_E3_ENABLE && LOCAL_EXTRUDERS > 3
     E3_ENABLE_INIT;
     if (!E_ENABLE_ON) E3_ENABLE_WRITE(HIGH);
   #endif
@@ -1012,16 +1012,16 @@ void st_init() {
     #endif
     AXIS_INIT(z, Z, Z);
   #endif
-  #if HAS_E0_STEP
+  #if HAS_E0_STEP && LOCAL_EXTRUDERS > 0
     E_AXIS_INIT(0);
   #endif
-  #if HAS_E1_STEP
+  #if HAS_E1_STEP && LOCAL_EXTRUDERS > 1
     E_AXIS_INIT(1);
   #endif
-  #if HAS_E2_STEP
+  #if HAS_E2_STEP && LOCAL_EXTRUDERS > 2
     E_AXIS_INIT(2);
   #endif
-  #if HAS_E3_STEP
+  #if HAS_E3_STEP && LOCAL_EXTRUDERS > 3
     E_AXIS_INIT(3);
   #endif
 

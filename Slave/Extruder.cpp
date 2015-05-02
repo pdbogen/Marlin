@@ -39,13 +39,19 @@ void Extruder::runPID() {
 	#endif
 	if( output < 0 ) {
 		digitalWrite( heater_pin, LOW );
-		DEBUG_IO.println( " set=LOW" );
+		#ifdef DEBUG_PID
+			DEBUG_IO.println( " set=LOW" );
+		#endif
 	} else if( output >= 255 ) {
 		digitalWrite( heater_pin, HIGH );
-		DEBUG_IO.println( " set=HIGH" );
+		#ifdef DEBUG_PID
+			DEBUG_IO.println( " set=HIGH" );
+		#endif
 	} else {
 		analogWrite( heater_pin, output );
-		DEBUG_IO.print( " set=" ); DEBUG_IO.println( (uint8_t) output );
+		#ifdef DEBUG_PID
+			DEBUG_IO.print( " set=" ); DEBUG_IO.println( (uint8_t) output );
+		#endif
 	}
 	last = dt + last;
 }

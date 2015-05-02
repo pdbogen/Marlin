@@ -29,6 +29,9 @@ struct Extruder {
 	void setTemperature( float celsius ) { target_temperature = celsius; integral = 0; prev_error = 0; }
 	void runPID();
 	void setHeaterPin( uint8_t p ) { pinMode( p, OUTPUT ); heater_pin = p; }
+	void setEnablePin( uint8_t p ) { pinMode( p, OUTPUT ); enable_pin = p; disable(); }
+	void enable() { digitalWrite( enable_pin, LOW ); }
+	void disable() { digitalWrite( enable_pin, HIGH ); }
 
 private:
 	uint8_t kp, kd;
@@ -36,7 +39,7 @@ private:
 	float prev_error;
 	float integral;
 	unsigned long last;
-	uint8_t heater_pin;
+	uint8_t heater_pin, enable_pin;
 };
 
 #endif // EXTRUDER_H

@@ -32,6 +32,8 @@ PacketQueue output_queue;
 // | + link_transmit_packet( output_queue.front ) // if millis() > (time_ms+wait_ms)
 
 
+extern void slave_step_pin_initialize();
+
 uint8_t input_fragment[ sizeof( Packet ) ];
 uint8_t fragment_index = 0;
 
@@ -121,7 +123,8 @@ void link_transmit_packet( const Packet * p ) {
 void network_loop() {
 	if( output_queue.front() && output_queue.time_ms + output_queue.wait_ms <= millis() ) {
 		if( output_queue.wait_ms > 200 ) {
-			DEBUG_IO.println( "// Retry limit exceeded, dropping output packet" );
+			DEBUG_IO.print( "// Retry limit exceeded, dropping output packet " );
+			output_queue.front()->print( DEBUG_IO );
 			output_queue.dequeue();
 		} else {
 			link_transmit_packet( output_queue.front() );
@@ -224,9 +227,9 @@ void serialEvent1() {
 }
 
 void link_initialize() {
+	slave_step_pin_initialize();
 	MASTER.begin(250000);
 	// Flush the MASTER serial hardware buffer
 	while( MASTER.available() )
 		MASTER.read();
-
 }

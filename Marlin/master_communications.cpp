@@ -35,8 +35,15 @@ void slave_set_extruder_disabled( uint8_t extruder ) {
 	}
 }
 
+void slave_send_step() {
+	digitalWrite( SLAVE_STEP_PIN, !digitalRead( SLAVE_STEP_PIN ) );
+}
+
 PacketHandler packetHandlers[] = {
 	PacketHandler( CMD_REPORT_TEMP, &store_extruder_temp_from_slave ),
 	PacketHandler( 0, NULL )
 };
 
+extern void slave_step_pin_initialize() {
+	pinMode( SLAVE_STEP_PIN, OUTPUT );
+}

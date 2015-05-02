@@ -30,8 +30,10 @@ struct Extruder {
 	void runPID();
 	void setHeaterPin( uint8_t p ) { pinMode( p, OUTPUT ); heater_pin = p; }
 	void setEnablePin( uint8_t p ) { pinMode( p, OUTPUT ); enable_pin = p; disable(); }
+	void setStepPin( uint8_t p )   { pinMode( p, OUTPUT ); step_pin = p; digitalWrite( p, LOW ); }
 	void enable() { digitalWrite( enable_pin, LOW ); }
 	void disable() { digitalWrite( enable_pin, HIGH ); }
+	void step() { digitalWrite( step_pin, !digitalRead( step_pin ) ); }
 
 private:
 	uint8_t kp, kd;
@@ -39,7 +41,7 @@ private:
 	float prev_error;
 	float integral;
 	unsigned long last;
-	uint8_t heater_pin, enable_pin;
+	uint8_t heater_pin, enable_pin, step_pin;
 };
 
 #endif // EXTRUDER_H

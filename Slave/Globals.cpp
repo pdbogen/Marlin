@@ -8,6 +8,7 @@ Extruder extruders[HOT_ENDS];
 uint8_t therms[]  = THERMS;
 uint8_t heaters[] = HEATERS;
 uint8_t enables[] = ENABLES;
+uint8_t steps[]   = STEPS;
 
 unsigned long timers[NUM_TIMERS];
 

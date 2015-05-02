@@ -8,6 +8,8 @@
 
 //#define DEBUG_SERIAL_IO
 
+#define SLAVE_STEP_PIN 16
+
 #ifndef MASTER
 #define MASTER SLAVE_SERIAL
 #endif

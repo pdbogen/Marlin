@@ -20,3 +20,7 @@ PacketHandler packetHandlers[] = {
 	PacketHandler( CMD_SET_DISABLE_0, &set_disable_0 ),
 	PacketHandler( 0, NULL )
 };
+
+void slave_step_pin_initialize() {
+	pinMode( SLAVE_STEP_PIN, INPUT );
+}

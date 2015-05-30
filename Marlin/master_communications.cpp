@@ -32,17 +32,27 @@ void slave_set_extruder_temperature( uint8_t extruder, float target ) {
 	}
 }
 
-void slave_set_extruder_enabled( uint8_t extruder ) {
+void slave_set_extruder_enable( uint8_t extruder, uint8_t state ) {
 	if( extruder == 0 ) {
-		output_queue.enqueue( CMD_SET_ENABLE_0 );
-	} else {
-		warn_bad_extruder( extruder );
+		static uint8_t last_0 = !state;
+		if( state != last_0 ) {
+			last_0 = state;
+			if( state == 1 ) {
+				output_queue.enqueue( CMD_SET_ENABLE_0 );
+			} else {
+				output_queue.enqueue( CMD_SET_DISABLE_0 );
+			}
+		}
 	}
 }
 
-void slave_set_extruder_disabled( uint8_t extruder ) {
+void slave_set_extruder_direction( uint8_t extruder, uint8_t direction ) {
 	if( extruder == 0 ) {
-		output_queue.enqueue( CMD_SET_DISABLE_0 );
+		static uint8_t last = !direction;
+		if( direction != last ) {
+			output_queue.enqueue( CMD_SET_DIRECTION_0, Payload( direction ) );
+			last = direction;
+		}
 	} else {
 		warn_bad_extruder( extruder );
 	}

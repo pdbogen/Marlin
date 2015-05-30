@@ -23,6 +23,7 @@ void initialize_temperatures() {
 		extruders[i].setEnablePin( enables[i] );
 		extruders[i].setHeaterPin( heaters[i] );
 		extruders[i].setStepPin(   steps[i]   );
+		extruders[i].setDirectionPin( dirs[i] );
 		extruders[i].beta     = betas[i];
 		extruders[i].Rs       = rs[i];
 		extruders[i].calculateRInf();

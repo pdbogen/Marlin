@@ -12,6 +12,12 @@ void set_temp_0( const Payload & p ) {
 
 void set_enable_0( const Payload & )  { DEBUG_IO.println( " Enabling Extruder 0" ); extruders[0].enable();  }
 void set_disable_0( const Payload & ) { DEBUG_IO.println( "Disabling Extruder 0" ); extruders[0].disable(); }
+void set_direction_0( const Payload & p ) {
+	DEBUG_IO.print( "Setting Extruder 0 Direction to " );
+	DEBUG_IO.println( p.byte );
+	extruders[0].direction( p.byte );
+}
+
 void cmd_autotune( const Payload & p ) {
 	if( p.byte < 0 || p.byte > HOT_ENDS ) {
 		DEBUG_IO.print( "Cannot autotune non-existent hot end " + p.byte );
@@ -22,9 +28,10 @@ void cmd_autotune( const Payload & p ) {
 
 PacketHandler packetHandlers[] = {
 	PacketHandler( CMD_PING, &report_ping ),
-	PacketHandler( CMD_SET_TEMP_0,   &set_temp_0     ),
-	PacketHandler( CMD_SET_ENABLE_0, &set_enable_0   ),
-	PacketHandler( CMD_SET_DISABLE_0, &set_disable_0 ),
+	PacketHandler( CMD_SET_TEMP_0,      &set_temp_0      ),
+	PacketHandler( CMD_SET_ENABLE_0,    &set_enable_0    ),
+	PacketHandler( CMD_SET_DISABLE_0,   &set_disable_0   ),
+	PacketHandler( CMD_SET_DIRECTION_0, &set_direction_0 ),
 	PacketHandler( CMD_AUTOTUNE,        &cmd_autotune    ),
 	PacketHandler( 0, NULL )
 };

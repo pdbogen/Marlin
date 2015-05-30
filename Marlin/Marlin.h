@@ -164,8 +164,8 @@ void manage_inactivity(bool ignore_stepper_queue = false);
     #define enable_e1()  E1_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_e1() E1_ENABLE_WRITE(!E_ENABLE_ON)
   #else
-    #define enable_e1() slave_set_extruder_enabled(0);
-    #define disable_e1() slave_set_extruder_disabled(0);
+    #define enable_e1() slave_set_extruder_enable(0,1);
+    #define disable_e1() slave_set_extruder_enable(0,0);
   #endif
 #else
   #define enable_e1()  /* nothing */
@@ -177,8 +177,8 @@ void manage_inactivity(bool ignore_stepper_queue = false);
     #define enable_e2()  E2_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_e2() E2_ENABLE_WRITE(!E_ENABLE_ON)
   #else
-    #define enable_e2() slave_set_extruder_enabled(1);
-    #define disable_e2() slave_set_extruder_disabled(1);
+    #define enable_e2() slave_set_extruder_enable(1,1);
+    #define disable_e2() slave_set_extruder_enable(1,0);
   #endif
 #else
   #define enable_e2()  /* nothing */
@@ -190,8 +190,8 @@ void manage_inactivity(bool ignore_stepper_queue = false);
     #define enable_e3()  E3_ENABLE_WRITE( E_ENABLE_ON)
     #define disable_e3() E3_ENABLE_WRITE(!E_ENABLE_ON)
   #else
-    #define enable_e3() slave_set_extruder_enabled(2);
-    #define disable_e3() slave_set_extruder_disabled(2);
+    #define enable_e3() slave_set_extruder_enable(2,1);
+    #define disable_e3() slave_set_extruder_enable(2,0);
   #endif
 #else
   #define enable_e3()  /* nothing */

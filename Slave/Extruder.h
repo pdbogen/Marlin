@@ -32,9 +32,11 @@ struct Extruder {
 	void setHeaterPin( uint8_t p ) { pinMode( p, OUTPUT ); heater_pin = p; }
 	void setEnablePin( uint8_t p ) { pinMode( p, OUTPUT ); enable_pin = p; disable(); }
 	void setStepPin( uint8_t p )   { pinMode( p, OUTPUT ); step_pin = p; digitalWrite( p, LOW ); }
+	void setDirectionPin( uint8_t p ) { pinMode( p, OUTPUT ); direction_pin = p; }
 	void enable() { digitalWrite( enable_pin, LOW ); }
 	void disable() { digitalWrite( enable_pin, HIGH ); }
 	void step() { digitalWrite( step_pin, !digitalRead( step_pin ) ); }
+	void direction( uint8_t dir ) { digitalWrite( direction_pin, dir ); }
 	uint8_t autotune( float temp, int ncycles );
 
 private:

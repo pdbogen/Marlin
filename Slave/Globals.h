@@ -12,7 +12,7 @@
 #define DEBUG_TEMP_TIMER 0
 
 extern Extruder extruders[];
-extern uint8_t therms[], heaters[], enables[], steps[];
+extern uint8_t therms[], heaters[], enables[], steps[], dirs[];
 
 extern unsigned long timers[];
 

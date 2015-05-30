@@ -9,7 +9,7 @@
 #include <stdint.h>
 
 void initialize_serial() {
-	DEBUG_IO.begin(250000);
+	DEBUG_IO.begin(115200);
 	link_initialize();
 }
 

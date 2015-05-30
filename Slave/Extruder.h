@@ -20,7 +20,7 @@ struct Extruder {
 		beta = 0;
 		Rs = 0;
 		RInf = 0;
-		integral_max = 1000.0 * PID_INTERVAL;
+		integral_max = 100;
 		kp = 34; ki = 4.02; kd = 71;
 		integral = 0; prev_error = 0; last=millis();
 		temp_idx = 255;

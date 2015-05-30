@@ -11,6 +11,19 @@ void store_extruder_temp_from_slave( const Payload &p ) {
 	current_temperature[1] = p.decimal;
 }
 
+void report_autotune_completion( const Payload &p ) {
+/*	if( p.byte == 0 ) {
+		DEBUG_IO.print( "// slave autotune finished successfully!" );
+	} else {
+		DEBUG_IO.print( "// slave autotune failed to complete! check slave serial for more information" );
+	}
+*/
+}
+
+void slave_autotune( uint8_t extruder ) {
+	output_queue.enqueue( CMD_AUTOTUNE, Payload( extruder ) );
+}
+
 void slave_set_extruder_temperature( uint8_t extruder, float target ) {
 	if( extruder == 0 ) {
 		output_queue.enqueue( CMD_SET_TEMP_0, Payload( target ) );
@@ -41,6 +54,7 @@ void slave_send_step() {
 
 PacketHandler packetHandlers[] = {
 	PacketHandler( CMD_REPORT_TEMP, &store_extruder_temp_from_slave ),
+	PacketHandler( CMD_AUTOTUNE_DONE, &report_autotune_completion ),
 	PacketHandler( 0, NULL )
 };
 

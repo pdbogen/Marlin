@@ -9,11 +9,13 @@
 #define CMD_PING 1
 #define CMD_REPORT_TEMP 2
 
-#define CMD_SET_TEMP_0     3
-#define CMD_SET_ENABLE_0   4
-#define CMD_SET_DISABLE_0  5
-#define CMD_SET_DIR_NORM_0 6
-#define CMD_SET_DIR_REV_0  7
+#define CMD_SET_TEMP_0      3
+#define CMD_SET_ENABLE_0    4
+#define CMD_SET_DISABLE_0   5
+#define CMD_SET_DIRECTION_0 6
+
+#define CMD_AUTOTUNE 7
+#define CMD_AUTOTUNE_DONE 8
 
 #include <stdint.h>
 
@@ -24,8 +26,10 @@ union Payload {
 	unsigned long uinteger;
 	float decimal;
 	uint16_t crc;
+	uint8_t byte;
 	const uint8_t bytes[];
 	Payload() {}
+	Payload( uint8_t byte ) : byte( byte ) { }
 	Payload( long integer ) : integer( integer ) { }
 	Payload( unsigned long uinteger ) : uinteger( uinteger ) { }
 	Payload( float decimal ) : decimal( decimal ) { }

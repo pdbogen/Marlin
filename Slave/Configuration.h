@@ -21,4 +21,5 @@
 
 #define TEMPERATURE_SAMPLES 5
 
+#define PID_MAX 255
 #endif

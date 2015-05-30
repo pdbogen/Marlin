@@ -21,10 +21,11 @@ struct Extruder {
 		Rs = 0;
 		RInf = 0;
 		integral_max = 1000.0 * PID_INTERVAL;
-		kp = 20; ki = 0.3 / PID_INTERVAL; kd = 10;
+		kp = 34; ki = 4.02; kd = 71;
 		integral = 0; prev_error = 0; last=millis();
+		temp_idx = 255;
 	}
-	float getTemperature();
+	float getTemperature( uint8_t smoothed = 1 );
 	void calculateRInf();
 	void setTemperature( float celsius ) { target_temperature = celsius; integral = 0; prev_error = 0; }
 	void runPID();
@@ -34,14 +35,18 @@ struct Extruder {
 	void enable() { digitalWrite( enable_pin, LOW ); }
 	void disable() { digitalWrite( enable_pin, HIGH ); }
 	void step() { digitalWrite( step_pin, !digitalRead( step_pin ) ); }
+	uint8_t autotune( float temp, int ncycles );
 
 private:
+	uint16_t smooth( uint16_t );
 	uint8_t kp, kd;
 	float ki;
 	float prev_error;
 	float integral;
 	unsigned long last;
-	uint8_t heater_pin, enable_pin, step_pin;
+	uint8_t heater_pin, enable_pin, step_pin, direction_pin;
+	uint8_t temp_idx;
+	uint16_t temps[TEMPERATURE_SAMPLES];
 };
 
 #endif // EXTRUDER_H

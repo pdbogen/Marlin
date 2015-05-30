@@ -9,6 +9,7 @@ uint8_t therms[]  = THERMS;
 uint8_t heaters[] = HEATERS;
 uint8_t enables[] = ENABLES;
 uint8_t steps[]   = STEPS;
+uint8_t dirs[]    = DIRS;
 
 unsigned long timers[NUM_TIMERS];
 

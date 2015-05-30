@@ -17,4 +17,8 @@
 //#define DEBUG_PID
 #define PID_INTERVAL 500 // milliseconds
 
+//#define DEBUG_SERIAL_IO
+
+#define TEMPERATURE_SAMPLES 5
+
 #endif

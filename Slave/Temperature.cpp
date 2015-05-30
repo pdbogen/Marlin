@@ -16,9 +16,12 @@ void set_hotend_temperature( uint8_t extruder, float celsius ) {
 }
 
 void check_hotend_temperatures() {
-	for( uint8_t i = 0; i < HOT_ENDS; i++ )
-		extruders[i].getTemperature();
 	unsigned long time = millis();
+	if( (time - timers[TEMP_TIMER]) >= 100 ) {
+		timers[TEMP_TIMER] = time;
+		for( uint8_t i = 0; i < HOT_ENDS; i++ )
+			extruders[i].getTemperature();
+	}
 
 	if( (time - timers[DEBUG_TEMP_TIMER]) >= 1000 ) {
 		timers[DEBUG_TEMP_TIMER] = time;

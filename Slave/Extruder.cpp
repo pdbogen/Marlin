@@ -148,7 +148,8 @@ void Extruder::runPID() {
 	float output = error * kp + integral * ki + derivative * kd;
 	#ifdef DEBUG_PID
 		DEBUG_IO.print( "measurement=" ); DEBUG_IO.print( temperature ); DEBUG_IO.print( " setpoint=" ); DEBUG_IO.println( target_temperature );
-		DEBUG_IO.print( "P=" ); DEBUG_IO.print( error ); DEBUG_IO.print( " I=" ); DEBUG_IO.print( integral ); DEBUG_IO.print( "D=" ); DEBUG_IO.println( derivative );
+		DEBUG_IO.print( "P=" ); DEBUG_IO.print( error ); DEBUG_IO.print( " I=" ); DEBUG_IO.print( integral ); DEBUG_IO.print( " D=" ); DEBUG_IO.println( derivative );
+		DEBUG_IO.print( "*kP=" ); DEBUG_IO.print( error*kp ); DEBUG_IO.print( " *kI=" ); DEBUG_IO.print( integral*ki ); DEBUG_IO.print( " *kD=" ); DEBUG_IO.println( derivative*kd );
 		DEBUG_IO.print( "output=" ); DEBUG_IO.print( output );
 	#endif
 	if( output < 0 ) {

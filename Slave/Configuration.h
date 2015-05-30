@@ -15,7 +15,7 @@
 #define PACKET_QUEUE_SIZE 10
 
 //#define DEBUG_PID
-#define PID_INTERVAL 500 // milliseconds
+#define PID_INTERVAL 100 // milliseconds
 
 //#define DEBUG_SERIAL_IO
 

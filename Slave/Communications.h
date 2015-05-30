@@ -31,5 +31,6 @@ struct PacketHandler {
 };
 
 extern PacketHandler packetHandlers[];
+void serialEvent1();
 
 #endif

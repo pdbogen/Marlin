@@ -34,33 +34,41 @@ PacketQueue output_queue;
 
 extern void slave_step_pin_initialize();
 
+// The packet size on the wire might be bigger due to escapes,
+// but we unescape before adding bytes to input_fragment.
 uint8_t input_fragment[ sizeof( Packet ) ];
 uint8_t fragment_index = 0;
 
-void link_layer_synchronize() {
+// Returns: 0 if a packet cannot be read, 1 if it may (no guarantee)
+inline uint8_t link_layer_synchronize() {
 	// Not building a fragment, discard bytes until SYN
 	if( fragment_index == 0 )
 		while( MASTER.available() > 0 && MASTER.peek() != LINK_SYN ) MASTER.read();
+	if( MASTER.available() >= sizeof( Packet ) + 1 )
+		return 1;
+	else
+		return 0;
 }
 
+// Returns: 0 if a packet could not be read, 1 if it could
 uint8_t link_layer_read_bytes() {
 	uint8_t c;
-	uint8_t stop = 0;
-	while( MASTER.available() > 0 && fragment_index < sizeof(Packet) && stop == 0 ) {
+	while( MASTER.available() > 0 && fragment_index < sizeof(Packet) ) {
 		switch( MASTER.peek() ) {
-			// Last packet was an incomplete packet, discard and start over.
+			// The first byte should be a SYN, but don't read it off
+			// unless there's more bytes. If there aren't more bytes, we'll
+			// come back to this later.
 			case LINK_SYN:
 				if( MASTER.available() >= 2 ) {
 					MASTER.read();
+					// Last packet was an incomplete packet, discard and start over.
 					if( fragment_index > 0 ) {
-						DEBUG_IO.print( "// Warning: dropping partial (" );
-						DEBUG_IO.print( fragment_index );
-						DEBUG_IO.println( " byte) packet" );
 						fragment_index = 0;
-						memset( input_fragment, 0, sizeof( Packet ) );
+						if( link_layer_synchronize() == 0 )
+							return 0;
 					}
 				} else {
-					stop = 1;
+					return 0;
 				}
 				break;
 			case LINK_ESC:
@@ -74,13 +82,11 @@ uint8_t link_layer_read_bytes() {
 							input_fragment[ fragment_index++ ] = LINK_ESC;
 							break;
 						case LINK_SYN: // This isn't an escape sequence, it's a SYN!
-							DEBUG_IO.print( "// Warning: dropping partial (" );
-							DEBUG_IO.print( fragment_index );
-							DEBUG_IO.println( " byte) packet" );
 							fragment_index = 0;
-							memset( input_fragment, 0, sizeof( Packet ) );
+							if( link_layer_synchronize() == 0 )
+								return 0;
 							break;
-						default:
+						default: // ESC+anything else is just that thing
 							input_fragment[ fragment_index++ ] = c;
 							break;
 					}
@@ -89,7 +95,7 @@ uint8_t link_layer_read_bytes() {
 					// ends in the middle of an escape
 					// sequence.
 					// This will leave the ESC on the buffer and we can try later.
-					stop = 1;
+					return 0;
 				}
 				break;
 			default:
@@ -97,7 +103,7 @@ uint8_t link_layer_read_bytes() {
 				break;
 		}
 	}
-	return stop == 0;
+	return 1;
 }
 
 void link_transmit_packet( const Packet * p ) {
@@ -121,10 +127,11 @@ void link_transmit_packet( const Packet * p ) {
 }
 
 void network_loop() {
-	if( output_queue.front() && output_queue.time_ms + output_queue.wait_ms <= millis() ) {
+	if( output_queue.front() && (output_queue.time_ms + output_queue.wait_ms) <= millis() ) {
 		if( output_queue.wait_ms > 200 ) {
 			DEBUG_IO.print( "// Retry limit exceeded, dropping output packet " );
 			output_queue.front()->print( DEBUG_IO );
+			DEBUG_IO.println();
 			output_queue.dequeue();
 		} else {
 			link_transmit_packet( output_queue.front() );
@@ -139,6 +146,7 @@ void network_loop() {
 			if( ph->command == p->command ) {
 				(*ph->handler)( p->payload );
 				handled = 1;
+				break;
 			}
 		}
 		if( !handled ) {
@@ -150,7 +158,7 @@ void network_loop() {
 	}
 }
 
-void network_transmit_ack( uint16_t crc ) {
+inline void network_transmit_ack( uint16_t crc ) {
 	Packet p;
 	p.command = CMD_ACK;
 	p.payload.crc = crc;
@@ -174,6 +182,8 @@ void network_handle_packet( Packet * p ) {
 		return;
 	}
 
+	// ACK packets are handled here; if the ACK is valid and is for the front of output_queue
+	// then we know output_queue was received successfully, so dequeue it.
 	if( p->command == CMD_ACK ) {
 		if( output_queue.front() && output_queue.front()->crc == p->payload.crc ) {
 			output_queue.dequeue();
@@ -190,6 +200,7 @@ void network_handle_packet( Packet * p ) {
 		return;
 	}
 
+	// Add the packet to the queue or drop it if the queue is full
 	if( input_queue.enqueue( p ) ) {
 		#ifdef DEBUG_SERIAL_IO
 			DEBUG_IO.print( "// Received and enqueued new packet: " );
@@ -209,26 +220,27 @@ void network_handle_packet( Packet * p ) {
 // true.
 void serialEvent1() {
 	while( MASTER.available() ) {
-		link_layer_synchronize();
+		// If fragment_index == 0, discard bytes until SYN
+		if( link_layer_synchronize() == 0 )
+			return;
 
 		// Return value of 0 means we needed to read a two-byte
 		// something and couldn't, so let some time pass and come back.
-		if( !link_layer_read_bytes() ) {
+		if( link_layer_read_bytes() == 0 )
 			return;
-		}
 
 		// Did we read a complete packet?
 		if( fragment_index == sizeof( Packet ) ) {
 			network_handle_packet( (Packet*) &(input_fragment) );
 			fragment_index = 0;
-			memset( input_fragment, 0, sizeof( Packet ) );
+			return; // this means we process at most one packet per call to serialEvent1
 		}
 	}
 }
 
 void link_initialize() {
 	slave_step_pin_initialize();
-	MASTER.begin(250000);
+	MASTER.begin(115200);
 	// Flush the MASTER serial hardware buffer
 	while( MASTER.available() )
 		MASTER.read();

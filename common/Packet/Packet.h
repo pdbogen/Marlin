@@ -18,8 +18,16 @@
 #define CMD_AUTOTUNE_DONE 8
 
 #include <stdint.h>
+#include <string.h>
 
+#ifndef PACKET_TEST
 #include <HardwareSerial.h>
+#endif // PACKET_TEST
+
+struct extruder_temp {
+	uint8_t extruder;
+	float   temperature;
+};
 
 union Payload {
 	long integer;
@@ -28,14 +36,20 @@ union Payload {
 	uint16_t crc;
 	uint8_t byte;
 	const uint8_t bytes[];
-	Payload() {}
+	uint8_t _bytes[];
+	extruder_temp etemp;
+	Payload() { memset( _bytes, 0, sizeof( Payload ) ); }
 	Payload( uint8_t byte ) : byte( byte ) { }
 	Payload( long integer ) : integer( integer ) { }
 	Payload( unsigned long uinteger ) : uinteger( uinteger ) { }
 	Payload( float decimal ) : decimal( decimal ) { }
 	Payload( uint16_t crc ) : crc( crc ) { }
-	Payload( const Payload &p ) : uinteger( p.uinteger ) { }
-	Payload& operator=(const Payload &p) { uinteger = p.uinteger; return *this; }
+	Payload( const Payload &p ) { memcpy( _bytes, p._bytes, sizeof( Payload ) ); }
+	Payload( const uint8_t extruder, const float temperature ) {
+		etemp.extruder = extruder;
+		etemp.temperature = temperature;
+	}
+	Payload& operator=(const Payload &p) { memcpy( _bytes, p._bytes, sizeof( Payload ) ); return *this; }
 };
 
 struct Packet {
@@ -47,7 +61,11 @@ struct Packet {
 	Packet() {}
 	Packet( uint8_t command ) : command( command ) { sign(); }
 	Packet( uint8_t command, Payload payload ) : command( command ), payload( payload ) { sign(); }
+#ifndef PACKET_TEST
 	void print( HardwareSerial s ) const;
+#else // PACKET_TEST
+	void print() const;
+#endif // PACKET_TEST
 };
 
 // Simple ring-buffer-based queue

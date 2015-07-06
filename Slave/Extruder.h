@@ -20,8 +20,9 @@ struct Extruder {
 		beta = 0;
 		Rs = 0;
 		RInf = 0;
-		integral_max = 100;
-		kp = 34; ki = 4.02; kd = 71;
+		integral_max = 1000000;
+//		kp = 20; ki = .0001; kd = 0;
+		kp = 60;
 		integral = 0; prev_error = 0; last=millis();
 		temp_idx = 255;
 	}
@@ -48,7 +49,8 @@ private:
 	unsigned long last;
 	uint8_t heater_pin, enable_pin, step_pin, direction_pin;
 	uint8_t temp_idx;
-	uint16_t temps[TEMPERATURE_SAMPLES];
+//	uint16_t temps[TEMPERATURE_SAMPLES];
+	uint16_t prev_temp;
 };
 
 #endif // EXTRUDER_H

@@ -1,8 +1,26 @@
 #include "Packet.h"
 
 #include <stdint.h>
-#include <util/crc16.h>
+#ifndef PACKET_TEST
+	#include <util/crc16.h>
+#else
+	#include <cstdio>
+#endif // PACKET_TEST
 #include <string.h>
+
+#ifdef PACKET_TEST
+	uint16_t _crc16_update( uint16_t crc, uint8_t byte ) {
+		uint8_t i;
+		crc ^= byte;
+		for( i = 0; i < 8; i++ ) {
+			if( crc & 1 )
+				crc = (crc >> 1) ^ 0xA001;
+			else
+				crc = (crc >> 1);
+		}
+		return crc;
+	}
+#endif
 
 void Packet::sign() {
 	crc = 0;
@@ -68,14 +86,20 @@ void PacketQueue::dequeue() {
 	wait_ms = 100;
 }
 
+#ifndef PACKET_TEST
+#define PRINT(x) s.print( x );
 void Packet::print( HardwareSerial s ) const {
+#else
+#define PRINT(x) printf( "%s", x );
+void Packet::print() const {
+#endif
 	char buf[64];
 	sprintf( buf, "%02x | ", command );
-	s.print( buf );
+	PRINT( buf );
 	for( uint8_t i = 0; i < sizeof( Payload ); i++ ) {
 		sprintf( buf, "%02x ", payload.bytes[i] );
-		s.print( buf );
+		PRINT( buf );
 	}
 	sprintf( buf, "| %02x %02x", ((uint8_t*)(&crc))[0], ((uint8_t*)(&crc))[1] );
-	s.print( buf );
+	PRINT( buf );
 }

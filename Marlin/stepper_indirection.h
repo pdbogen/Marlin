@@ -117,7 +117,7 @@
 	#define E0_ENABLE_READ READ(E0_ENABLE_PIN)
 #else
 	#define E0_STEP_INIT
-	#define E0_STEP_WRITE(STATE) slave_send_step();
+	#define E0_STEP_WRITE(STATE) slave_send_step(STATE);
 	#define E0_STEP_READ
 
 	#define E0_DIR_INIT
@@ -125,7 +125,7 @@
 	#define E0_DIR_READ
 
 	#define E0_ENABLE_INIT
-	#define E0_ENABLE_WRITE(STATE) slave_set_enable( -1, STATE );
+	#define E0_ENABLE_WRITE(STATE) slave_set_extruder_enable( -1, STATE );
 	#define E0_ENABLE_READ
 #endif
 
@@ -144,7 +144,7 @@
 	#define E1_ENABLE_READ READ(E1_ENABLE_PIN)
 #else
 	#define E1_STEP_INIT
-	#define E1_STEP_WRITE(STATE) slave_send_step();
+	#define E1_STEP_WRITE(STATE) slave_send_step(STATE);
 	#define E1_STEP_READ
 
 	#define E1_DIR_INIT
@@ -152,7 +152,7 @@
 	#define E1_DIR_READ
 
 	#define E1_ENABLE_INIT
-	#define E1_ENABLE_WRITE(STATE) slave_set_enable( 0, STATE );
+	#define E1_ENABLE_WRITE(STATE) slave_set_extruder_enable( 0, STATE );
 	#define E1_ENABLE_READ
 #endif
 
@@ -171,7 +171,7 @@
 	#define E2_ENABLE_READ READ(E2_ENABLE_PIN)
 #else
 	#define E2_STEP_INIT
-	#define E2_STEP_WRITE(STATE) slave_send_step();
+	#define E2_STEP_WRITE(STATE) slave_send_step(STATE);
 	#define E2_STEP_READ
 
 	#define E2_DIR_INIT
@@ -179,7 +179,7 @@
 	#define E2_DIR_READ
 
 	#define E2_ENABLE_INIT
-	#define E2_ENABLE_WRITE(STATE) slave_set_enable( 1, STATE );
+	#define E2_ENABLE_WRITE(STATE) slave_set_extruder_enable( 1, STATE );
 	#define E2_ENABLE_READ
 #endif
 
@@ -198,7 +198,7 @@
 	#define E3_ENABLE_READ READ(E3_ENABLE_PIN)
 #else
 	#define E3_STEP_INIT
-	#define E3_STEP_WRITE(STATE) slave_send_step();
+	#define E3_STEP_WRITE(STATE) slave_send_step(STATE);
 	#define E3_STEP_READ
 
 	#define E3_DIR_INIT
@@ -206,7 +206,7 @@
 	#define E3_DIR_READ
 
 	#define E3_ENABLE_INIT
-	#define E3_ENABLE_WRITE(STATE) slave_set_enable( 2, STATE );
+	#define E3_ENABLE_WRITE(STATE) slave_set_extruder_enable( 2, STATE );
 	#define E3_ENABLE_READ
 #endif
 

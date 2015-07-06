@@ -20,8 +20,24 @@ void report_autotune_completion( const Payload &p ) {
 */
 }
 
-void slave_autotune( uint8_t extruder ) {
-	output_queue.enqueue( CMD_AUTOTUNE, Payload( extruder ) );
+void slave_autotune( uint8_t extruder, float temperature ) {
+#ifdef 0 // Disable slave autotune debug
+	DEBUG_IO.print( "// instructing slave to autotune E" );
+		DEBUG_IO.print( extruder );
+		DEBUG_IO.print( " at S" );
+		DEBUG_IO.println( temperature );
+	for( uint8_t i = 0; i < sizeof( uint8_t ); i++ ) {
+		DEBUG_IO.print( ((uint8_t*)(&extruder))[i], HEX );
+		DEBUG_IO.print( " " );
+	}
+	DEBUG_IO.println();
+	for( uint8_t i = 0; i < sizeof( float ); i++ ) {
+		DEBUG_IO.print( ((uint8_t*)(&temperature))[i], HEX );
+		DEBUG_IO.print( " " );
+	}
+	DEBUG_IO.println();
+#endif // Disable slave autotune debug
+	output_queue.enqueue( CMD_AUTOTUNE, Payload( extruder, temperature ) );
 }
 
 void slave_set_extruder_temperature( uint8_t extruder, float target ) {
@@ -58,8 +74,8 @@ void slave_set_extruder_direction( uint8_t extruder, uint8_t direction ) {
 	}
 }
 
-void slave_send_step() {
-	digitalWrite( SLAVE_STEP_PIN, !digitalRead( SLAVE_STEP_PIN ) );
+void slave_send_step( uint8_t state ) {
+	WRITE( SLAVE_STEP_PIN, state );
 }
 
 PacketHandler packetHandlers[] = {

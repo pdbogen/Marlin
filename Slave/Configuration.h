@@ -20,6 +20,9 @@
 //#define DEBUG_SERIAL_IO
 
 #define TEMPERATURE_SAMPLES 5
+#define PREV_FACTOR 10.0
+#define TEMP_SMOOTHED 1
+#define TEMP_RAW 0
 
 #define PID_MAX 255
 #endif

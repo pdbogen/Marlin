@@ -5,28 +5,14 @@
 #include <math.h>
 
 float Extruder::getTemperature( uint8_t smoothed ) {
-	uint16_t raw = analogRead( temp_pin );
-	uint16_t r = smooth( raw );
-	temperature = ABS_ZERO + beta / log( (r*Rs/(AD_RANGE - r)) /RInf );
-	if( smoothed == 1 ) {
-		return temperature;
-	} else {
-		return ABS_ZERO + beta / log( raw * Rs / (AD_RANGE - raw) / RInf );
+	//uint16_t raw = analogRead( temp_pin );
+	float raw = 0;
+	for( uint8_t i = 0; i < TEMPERATURE_SAMPLES; i++ ) {
+		uint16_t reading = analogRead( temp_pin );
+		raw = raw + reading / (TEMPERATURE_SAMPLES*1.0);
 	}
-}
-
-uint16_t Extruder::smooth( uint16_t new_value ) {
-	if( temp_idx == 255 ) {
-		memset( temps, new_value, sizeof( uint16_t ) * TEMPERATURE_SAMPLES );
-		temp_idx = 0;
-	} else {
-		temps[ temp_idx ] = new_value;
-		temp_idx = (temp_idx+1)%TEMPERATURE_SAMPLES;
-	}
-	uint16_t result = 0;
-	for( uint8_t i = 0; i < TEMPERATURE_SAMPLES; i++ )
-		result += temps[ i ] / TEMPERATURE_SAMPLES;
-	return result;
+	temperature = ABS_ZERO + beta / log( raw * Rs / (AD_RANGE - raw) / RInf );
+	return temperature;
 }
 
 void Extruder::calculateRInf() {
@@ -51,10 +37,12 @@ uint8_t Extruder::autotune( float temp, int ncycles ) {
 	output = bias = d = PID_MAX / 2;
 
 	// PID Tuning loop
-	DEBUG_IO.println( "Beginning PID autotuning..." );
+	DEBUG_IO.print( "Beginning PID autotuning (S" );
+		DEBUG_IO.print( temp );
+		DEBUG_IO.println( ")..." );
 	for (;;) {
 		unsigned long ms = millis();
-		input = getTemperature(1);
+		input = getTemperature( TEMP_SMOOTHED );
 		max = max(max, input);
 		min = min(min, input);
 
@@ -133,7 +121,7 @@ void Extruder::runPID() {
 	if( dt < PID_INTERVAL )
 		return;
 
-	float error = target_temperature - getTemperature( 1 );
+	float error = target_temperature - temperature;
 	if( error > 10 || error < -10 ) {
 		integral = 0;
 	} else {
@@ -147,10 +135,24 @@ void Extruder::runPID() {
 	prev_error = error;
 	float output = error * kp + integral * ki + derivative * kd;
 	#ifdef DEBUG_PID
-		DEBUG_IO.print( "measurement=" ); DEBUG_IO.print( temperature ); DEBUG_IO.print( " setpoint=" ); DEBUG_IO.println( target_temperature );
-		DEBUG_IO.print( "P=" ); DEBUG_IO.print( error ); DEBUG_IO.print( " I=" ); DEBUG_IO.print( integral ); DEBUG_IO.print( " D=" ); DEBUG_IO.println( derivative );
-		DEBUG_IO.print( "*kP=" ); DEBUG_IO.print( error*kp ); DEBUG_IO.print( " *kI=" ); DEBUG_IO.print( integral*ki ); DEBUG_IO.print( " *kD=" ); DEBUG_IO.println( derivative*kd );
-		DEBUG_IO.print( "output=" ); DEBUG_IO.print( output );
+		DEBUG_IO.print( "PID: measurement=" );
+			DEBUG_IO.print( temperature );
+			DEBUG_IO.print( " setpoint=" );
+			DEBUG_IO.println( target_temperature );
+		DEBUG_IO.print( "PID: P=" );
+			DEBUG_IO.print( error );
+			DEBUG_IO.print( " I=" );
+			DEBUG_IO.print( integral );
+			DEBUG_IO.print( " D=" );
+			DEBUG_IO.println( derivative );
+		DEBUG_IO.print( "PID: *kP=" );
+			DEBUG_IO.print( error*kp );
+			DEBUG_IO.print( " *kI=" );
+			DEBUG_IO.print( integral*ki );
+			DEBUG_IO.print( " *kD=" );
+			DEBUG_IO.println( derivative*kd );
+		DEBUG_IO.print( "PID: output=" );
+			DEBUG_IO.print( output );
 	#endif
 	if( output < 0 ) {
 		digitalWrite( heater_pin, LOW );

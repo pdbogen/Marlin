@@ -4909,7 +4909,7 @@ inline void gcode_M303() {
   int c = code_seen('C') ? code_value_short() : 5;
   float temp = code_seen('S') ? code_value() : (e < 0 ? 70.0 : 150.0);
   if( e >= LOCAL_EXTRUDERS ) {
-    slave_autotune( e - LOCAL_EXTRUDERS );
+    slave_autotune( e - LOCAL_EXTRUDERS, temp );
   } else {
     PID_autotune(temp, e, c);
   }

@@ -160,39 +160,24 @@ void manage_inactivity(bool ignore_stepper_queue = false);
 #endif
 
 #if (EXTRUDERS > 1) && HAS_E1_ENABLE
-  #if LOCAL_EXTRUDERS > 1
-    #define enable_e1()  E1_ENABLE_WRITE( E_ENABLE_ON)
-    #define disable_e1() E1_ENABLE_WRITE(!E_ENABLE_ON)
-  #else
-    #define enable_e1() slave_set_extruder_enable(0,1);
-    #define disable_e1() slave_set_extruder_enable(0,0);
-  #endif
+  #define enable_e1()  E1_ENABLE_WRITE( E_ENABLE_ON)
+  #define disable_e1() E1_ENABLE_WRITE(!E_ENABLE_ON)
 #else
   #define enable_e1()  /* nothing */
   #define disable_e1() /* nothing */
 #endif
 
 #if (EXTRUDERS > 2) && HAS_E2_ENABLE
-  #if LOCAL_EXTRUDERS > 2
-    #define enable_e2()  E2_ENABLE_WRITE( E_ENABLE_ON)
-    #define disable_e2() E2_ENABLE_WRITE(!E_ENABLE_ON)
-  #else
-    #define enable_e2() slave_set_extruder_enable(1,1);
-    #define disable_e2() slave_set_extruder_enable(1,0);
-  #endif
+  #define enable_e2()  E2_ENABLE_WRITE( E_ENABLE_ON)
+  #define disable_e2() E2_ENABLE_WRITE(!E_ENABLE_ON)
 #else
   #define enable_e2()  /* nothing */
   #define disable_e2() /* nothing */
 #endif
 
 #if (EXTRUDERS > 3) && HAS_E3_ENABLE
-  #if LOCAL_EXTRUDERS > 3
-    #define enable_e3()  E3_ENABLE_WRITE( E_ENABLE_ON)
-    #define disable_e3() E3_ENABLE_WRITE(!E_ENABLE_ON)
-  #else
-    #define enable_e3() slave_set_extruder_enable(2,1);
-    #define disable_e3() slave_set_extruder_enable(2,0);
-  #endif
+  #define enable_e3()  E3_ENABLE_WRITE( E_ENABLE_ON)
+  #define disable_e3() E3_ENABLE_WRITE(!E_ENABLE_ON)
 #else
   #define enable_e3()  /* nothing */
   #define disable_e3() /* nothing */

@@ -21,7 +21,7 @@ void report_autotune_completion( const Payload &p ) {
 }
 
 void slave_autotune( uint8_t extruder, float temperature ) {
-#ifdef 0 // Disable slave autotune debug
+#if 0 // Disable slave autotune debug
 	DEBUG_IO.print( "// instructing slave to autotune E" );
 		DEBUG_IO.print( extruder );
 		DEBUG_IO.print( " at S" );

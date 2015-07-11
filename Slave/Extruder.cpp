@@ -1,19 +1,9 @@
 #include "Extruder.h"
 #include "Globals.h"
+#include "Temperature.h"
 
 #include <Arduino.h>
 #include <math.h>
-
-float Extruder::getTemperature( uint8_t smoothed ) {
-	//uint16_t raw = analogRead( temp_pin );
-	float raw = 0;
-	for( uint8_t i = 0; i < TEMPERATURE_SAMPLES; i++ ) {
-		uint16_t reading = analogRead( temp_pin );
-		raw = raw + reading / (TEMPERATURE_SAMPLES*1.0);
-	}
-	temperature = ABS_ZERO + beta / log( raw * Rs / (AD_RANGE - raw) / RInf );
-	return temperature;
-}
 
 void Extruder::calculateRInf() {
 	RInf = NTC * exp( -beta / 298.15 );
@@ -42,7 +32,8 @@ uint8_t Extruder::autotune( float temp, int ncycles ) {
 		DEBUG_IO.println( ")..." );
 	for (;;) {
 		unsigned long ms = millis();
-		input = getTemperature( TEMP_SMOOTHED );
+		check_hotend_temperatures();
+		input = temperature;
 		max = max(max, input);
 		min = min(min, input);
 
@@ -122,14 +113,10 @@ void Extruder::runPID() {
 		return;
 
 	float error = target_temperature - temperature;
-	if( error > 10 || error < -10 ) {
+	if( error > integral_range || error < -integral_range ) {
 		integral = 0;
 	} else {
 		integral = integral + error * dt;
-		if( integral > integral_max )
-			integral = integral_max;
-		if( integral < -integral_max )
-			integral = -integral_max;
 	}
 	float derivative = (error - prev_error) / dt;
 	prev_error = error;

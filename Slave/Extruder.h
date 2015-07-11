@@ -14,21 +14,21 @@ struct Extruder {
 	unsigned long Rs;
 	float RInf;
 	uint8_t temp_pin;
+	uint8_t integral_range;
 
 	Extruder() {
 		temperature = 0;
 		beta = 0;
 		Rs = 0;
 		RInf = 0;
-		integral_max = 1000000;
+		integral_range = 15;
 //		kp = 20; ki = .0001; kd = 0;
-		kp = 60;
+		kp = 9; ki=.0005; kd=0;
 		integral = 0; prev_error = 0; last=millis();
 		temp_idx = 255;
 	}
-	float getTemperature( uint8_t smoothed = 1 );
+	void setTargetTemperature( float celsius ) { target_temperature = celsius; integral = 0; prev_error = 0; }
 	void calculateRInf();
-	void setTemperature( float celsius ) { target_temperature = celsius; integral = 0; prev_error = 0; }
 	void runPID();
 	void setHeaterPin( uint8_t p ) { pinMode( p, OUTPUT ); heater_pin = p; }
 	void setEnablePin( uint8_t p ) { pinMode( p, OUTPUT ); enable_pin = p; disable(); }

@@ -1,8 +1,10 @@
 #ifndef _CONFIGURATION_H
 #define _CONFIGURATION_H
 
-#define DEBUG_IO Serial
-#define MASTER   Serial1
+#define DEBUG_IO    Serial
+#define DEBUG_BAUD  115200
+#define MASTER      Serial1
+#define MASTER_BAUD 57600
 
 #define HOT_ENDS 1
 

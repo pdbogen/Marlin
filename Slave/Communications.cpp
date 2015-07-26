@@ -247,7 +247,7 @@ void serialEvent1() {
 
 void link_initialize() {
 	slave_step_pin_initialize();
-	MASTER.begin(115200);
+	MASTER.begin(MASTER_BAUD);
 	// Flush the MASTER serial hardware buffer
 	while( MASTER.available() )
 		MASTER.read();

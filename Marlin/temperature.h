@@ -105,11 +105,13 @@ FORCE_INLINE float degTargetBed() { return target_temperature_bed; }
 
 FORCE_INLINE void setTargetHotend(const float& celsius, uint8_t extruder) {
   target_temperature[extruder] = celsius;
+  #if EXTRUDERS > LOCAL_EXTRUDERS
+  if( extruder >= LOCAL_EXTRUDERS )
+    slave_set_extruder_temperature( extruder-1, celsius );
+  #endif
   #if ENABLED(THERMAL_PROTECTION_HOTENDS)
     start_watching_heater(extruder);
   #endif
-  if( extruder >= LOCAL_EXTRUDERS )
-    slave_set_extruder_temperature( extruder-1, celsius );
 }
 FORCE_INLINE void setTargetBed(const float& celsius) { target_temperature_bed = celsius; }
 
@@ -126,41 +128,20 @@ FORCE_INLINE bool isCoolingBed() { return target_temperature_bed < current_tempe
   FORCE_INLINE bool isHeatingHotend##NR() { return isHeatingHotend(NR); } \
   FORCE_INLINE bool isCoolingHotend##NR() { return isCoolingHotend(NR); }
 
-#if LOCAL_EXTRUDERS < EXTRUDERS
-#define REMOTE_HOTEND_ROUTINES(NR) \
-  FORCE_INLINE float degHotend##NR() { return degHotend(NR-1); } \
-  FORCE_INLINE float degTargetHotend##NR() { return degTargetHotend(NR-1); } \
-  FORCE_INLINE void setTargetHotend##NR(const float c) { setTargetHotend(c, NR); } \
-  FORCE_INLINE bool isHeatingHotend##NR() { return isHeatingHotend(NR-1); } \
-  FORCE_INLINE bool isCoolingHotend##NR() { return isCoolingHotend(NR-1); }
-#endif
-
 HOTEND_ROUTINES(0);
 
 #if EXTRUDERS > 1
-  #if LOCAL_EXTRUDERS > 1
     HOTEND_ROUTINES(1);
-  #else
-    REMOTE_HOTEND_ROUTINES(1)
-  #endif
 #else
   #define setTargetHotend1(c) do{}while(0)
 #endif
 #if EXTRUDERS > 2
-  #if LOCAL_EXTRUDERS > 2
     HOTEND_ROUTINES(2);
-  #else
-    REMOTE_HOTEND_ROUTINES(2)
-  #endif
 #else
   #define setTargetHotend2(c) do{}while(0)
 #endif
 #if EXTRUDERS > 3
-  #if LOCAL_EXTRUDERS > 3
     HOTEND_ROUTINES(3);
-  #else
-    REMOTE_HOTEND_ROUTINES(3)
-  #endif
 #else
   #define setTargetHotend3(c) do{}while(0)
 #endif

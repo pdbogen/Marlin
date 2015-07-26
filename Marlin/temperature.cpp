@@ -1129,7 +1129,7 @@ void disable_all_heaters() {
     #if LOCAL_EXTRUDERS > 1
       DISABLE_HEATER(1);
     #else
-      //FIXME: DISABLE REMOTE EXTRUDER 1
+      slave_set_extruder_temperature(0,0);
     #endif
   #endif
 
@@ -1137,7 +1137,7 @@ void disable_all_heaters() {
     #if LOCAL_EXTRUDERS > 2
       DISABLE_HEATER(2);
     #else
-      //FIXME: DISABLE REMOTE EXTRUDER 2
+      slave_set_extruder_temperature(1,0);
     #endif
   #endif
 
@@ -1145,7 +1145,7 @@ void disable_all_heaters() {
     #if LOCAL_EXTRUDERS > 3
       DISABLE_HEATER(3);
     #else
-      //FIXME: DISABLE REMOTE EXTRUDER 3
+      slave_set_extruder_temperature(2,0);
     #endif
   #endif
 
@@ -1285,11 +1285,11 @@ ISR(TIMER0_COMPB_vect) {
 
   // Statics per heater
   ISR_STATICS(0);
-  #if (EXTRUDERS > 1) || ENABLED(HEATERS_PARALLEL)
+  #if (LOCAL_EXTRUDERS > 1) || ENABLED(HEATERS_PARALLEL)
     ISR_STATICS(1);
-    #if EXTRUDERS > 2
+    #if LOCAL_EXTRUDERS > 2
       ISR_STATICS(2);
-      #if EXTRUDERS > 3
+      #if LOCAL_EXTRUDERS > 3
         ISR_STATICS(3);
       #endif
     #endif
@@ -1400,11 +1400,11 @@ ISR(TIMER0_COMPB_vect) {
     if (slow_pwm_count == 0) {
 
       SLOW_PWM_ROUTINE(0); // EXTRUDER 0
-      #if EXTRUDERS > 1
+      #if LOCAL_EXTRUDERS > 1
         SLOW_PWM_ROUTINE(1); // EXTRUDER 1
-        #if EXTRUDERS > 2
+        #if LOCAL_EXTRUDERS > 2
           SLOW_PWM_ROUTINE(2); // EXTRUDER 2
-          #if EXTRUDERS > 3
+          #if LOCAL_EXTRUDERS > 3
             SLOW_PWM_ROUTINE(3); // EXTRUDER 3
           #endif
         #endif
@@ -1416,11 +1416,11 @@ ISR(TIMER0_COMPB_vect) {
     } // slow_pwm_count == 0
 
     PWM_OFF_ROUTINE(0); // EXTRUDER 0
-    #if EXTRUDERS > 1
+    #if LOCAL_EXTRUDERS > 1
       PWM_OFF_ROUTINE(1); // EXTRUDER 1
-      #if EXTRUDERS > 2
+      #if LOCAL_EXTRUDERS > 2
         PWM_OFF_ROUTINE(2); // EXTRUDER 2
-        #if EXTRUDERS > 3
+        #if LOCAL_EXTRUDERS > 3
           PWM_OFF_ROUTINE(3); // EXTRUDER 3
         #endif
       #endif
@@ -1447,11 +1447,11 @@ ISR(TIMER0_COMPB_vect) {
 
       // EXTRUDER 0
       if (state_timer_heater_0 > 0) state_timer_heater_0--;
-      #if EXTRUDERS > 1    // EXTRUDER 1
+      #if LOCAL_EXTRUDERS > 1    // EXTRUDER 1
         if (state_timer_heater_1 > 0) state_timer_heater_1--;
-        #if EXTRUDERS > 2    // EXTRUDER 2
+        #if LOCAL_EXTRUDERS > 2    // EXTRUDER 2
           if (state_timer_heater_2 > 0) state_timer_heater_2--;
-          #if EXTRUDERS > 3    // EXTRUDER 3
+          #if LOCAL_EXTRUDERS > 3    // EXTRUDER 3
             if (state_timer_heater_3 > 0) state_timer_heater_3--;
           #endif
         #endif

@@ -76,9 +76,13 @@ uint8_t link_layer_read_bytes() {
 					MASTER.read();
 					switch( c = MASTER.read() ) {
 						case ESC_SYN:
+							if( fragment_index >= sizeof(Packet) )
+								DEBUG_IO.println( "// Error: Out of bound write __FILE__:__LINE__" );
 							input_fragment[ fragment_index++ ] = LINK_SYN;
 							break;
 						case ESC_ESC:
+							if( fragment_index >= sizeof(Packet) )
+								DEBUG_IO.println( "// Error: Out of bound write __FILE__:__LINE__" );
 							input_fragment[ fragment_index++ ] = LINK_ESC;
 							break;
 						case LINK_SYN: // This isn't an escape sequence, it's a SYN!
@@ -87,6 +91,8 @@ uint8_t link_layer_read_bytes() {
 								return 0;
 							break;
 						default: // ESC+anything else is just that thing
+							if( fragment_index >= sizeof(Packet) )
+								DEBUG_IO.println( "// Error: Out of bound write __FILE__:__LINE__" );
 							input_fragment[ fragment_index++ ] = c;
 							break;
 					}
@@ -99,6 +105,8 @@ uint8_t link_layer_read_bytes() {
 				}
 				break;
 			default:
+				if( fragment_index >= sizeof(Packet) )
+					DEBUG_IO.println( "// Error: Out of bound write __FILE__:__LINE__" );
 				input_fragment[ fragment_index++ ] = MASTER.read();
 				break;
 		}
@@ -123,7 +131,6 @@ void link_transmit_packet( const Packet * p ) {
 				break;
 		}
 	}
-	MASTER.flush();
 }
 
 void network_loop() {
@@ -140,7 +147,7 @@ void network_loop() {
 		}
 	}
 	const Packet * p;
-	while( p = input_queue.front() ) {
+	while( (p = input_queue.front()) ) {
 		uint8_t handled = 0;
 		for( PacketHandler * ph = packetHandlers; ph->command != 0; ph++ ) {
 			if( ph->command == p->command ) {

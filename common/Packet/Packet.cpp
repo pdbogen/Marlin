@@ -53,7 +53,7 @@ const Packet * PacketQueue::front() {
 }
 
 uint8_t PacketQueue::enqueue( uint8_t command ) {
-	enqueue( command, Payload() );
+	return enqueue( command, Payload() );
 }
 
 uint8_t PacketQueue::enqueue( uint8_t command, Payload payload ) {

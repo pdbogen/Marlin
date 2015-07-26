@@ -2,13 +2,24 @@
 #include "Communications.h"
 #include "temperature.h"
 
+#if EXTRUDERS > LOCAL_EXTRUDERS
+uint8_t remote_extruder_direction[EXTRUDERS-LOCAL_EXTRUDERS] = {0};
+uint8_t remote_extruder_enable[EXTRUDERS-LOCAL_EXTRUDERS]={0};
+uint8_t remote_extruder_step=0;
+#endif
+
 void warn_bad_extruder( uint8_t extruder ) {
 	DEBUG_IO.print( "// cannot send command to set temp for remote extruder #" );
 	DEBUG_IO.println( extruder );
 }
 
 void store_extruder_temp_from_slave( const Payload &p ) {
-	current_temperature[1] = p.decimal;
+	#if EXTRUDERS > LOCAL_EXTRUDERS
+		uint8_t e = p.etemp.extruder + LOCAL_EXTRUDERS;
+		if( e < EXTRUDERS ) {
+			current_temperature[e] = p.etemp.temperature;
+		}
+	#endif
 }
 
 void report_autotune_completion( const Payload &p ) {
@@ -48,12 +59,13 @@ void slave_set_extruder_temperature( uint8_t extruder, float target ) {
 	}
 }
 
+#if EXTRUDERS > LOCAL_EXTRUDERS
 void slave_set_extruder_enable( uint8_t extruder, uint8_t state ) {
 	if( extruder == 0 ) {
 		static uint8_t last_0 = !state;
 		if( state != last_0 ) {
-			last_0 = state;
-			if( state == 1 ) {
+			last_0 = remote_extruder_enable[0] = state;
+			if( state == E_ENABLE_ON ) {
 				output_queue.enqueue( CMD_SET_ENABLE_0 );
 			} else {
 				output_queue.enqueue( CMD_SET_DISABLE_0 );
@@ -61,22 +73,7 @@ void slave_set_extruder_enable( uint8_t extruder, uint8_t state ) {
 		}
 	}
 }
-
-void slave_set_extruder_direction( uint8_t extruder, uint8_t direction ) {
-	if( extruder == 0 ) {
-		static uint8_t last = !direction;
-		if( direction != last ) {
-			output_queue.enqueue( CMD_SET_DIRECTION_0, Payload( direction ) );
-			last = direction;
-		}
-	} else {
-		warn_bad_extruder( extruder );
-	}
-}
-
-void slave_send_step( uint8_t state ) {
-	WRITE( SLAVE_STEP_PIN, state );
-}
+#endif
 
 PacketHandler packetHandlers[] = {
 	PacketHandler( CMD_REPORT_TEMP, &store_extruder_temp_from_slave ),

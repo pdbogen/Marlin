@@ -44,7 +44,7 @@ void manage_heater(); //it is critical that this is called periodically.
 
 // low level conversion routines
 // do not use these routines and variables outside of temperature.cpp
-extern int target_temperature[4];
+extern int target_temperature[4];  
 extern float current_temperature[4];
 #if ENABLED(SHOW_TEMP_ADC_VALUES)
   extern int current_temperature_raw[4];
@@ -127,21 +127,19 @@ FORCE_INLINE bool isCoolingBed() { return target_temperature_bed < current_tempe
   FORCE_INLINE void setTargetHotend##NR(const float c) { setTargetHotend(c, NR); } \
   FORCE_INLINE bool isHeatingHotend##NR() { return isHeatingHotend(NR); } \
   FORCE_INLINE bool isCoolingHotend##NR() { return isCoolingHotend(NR); }
-
 HOTEND_ROUTINES(0);
-
 #if EXTRUDERS > 1
-    HOTEND_ROUTINES(1);
+  HOTEND_ROUTINES(1);
 #else
   #define setTargetHotend1(c) do{}while(0)
 #endif
 #if EXTRUDERS > 2
-    HOTEND_ROUTINES(2);
+  HOTEND_ROUTINES(2);
 #else
   #define setTargetHotend2(c) do{}while(0)
 #endif
 #if EXTRUDERS > 3
-    HOTEND_ROUTINES(3);
+  HOTEND_ROUTINES(3);
 #else
   #define setTargetHotend3(c) do{}while(0)
 #endif

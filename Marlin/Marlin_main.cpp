@@ -1489,7 +1489,6 @@ static void setup_for_endstop_move() {
           if (IsRunning()) {
             SERIAL_ERROR_START;
             SERIAL_ERRORLNPGM("Z-Probe failed to engage!");
-            MYSERIAL.flush();
             LCD_ALERTMESSAGEPGM("Err: ZPROBE");
           }
           Stop();
@@ -1585,7 +1584,6 @@ static void setup_for_endstop_move() {
           if (IsRunning()) {
             SERIAL_ERROR_START;
             SERIAL_ERRORLNPGM("Z-Probe failed to retract!");
-            MYSERIAL.flush();
             LCD_ALERTMESSAGEPGM("Err: ZPROBE");
           }
           Stop();
@@ -2135,8 +2133,6 @@ inline void gcode_G0_G1() {
     #endif //FWRETRACT
 
     prepare_move();
-  } else {
-    MYSERIAL.println( "// ignoring G0/G1 while 'not running'" );
   }
 }
 
@@ -3829,7 +3825,6 @@ inline void gcode_M105() {
   #else // !HAS_TEMP_0 && !HAS_TEMP_BED
     SERIAL_ERROR_START;
     SERIAL_ERRORLNPGM(MSG_ERR_NO_THERMISTORS);
-    MYSERIAL.flush();
   #endif
 
   SERIAL_PROTOCOLPGM(" @:");
@@ -4085,7 +4080,6 @@ inline void gcode_M140() {
     if (material < 0 || material > 1) {
       SERIAL_ERROR_START;
       SERIAL_ERRORLNPGM(MSG_ERR_MATERIAL_INDEX);
-      MYSERIAL.flush();
     }
     else {
       int v;
@@ -5160,14 +5154,12 @@ inline void gcode_M410() { quickStop(); }
     if (!hasX || !hasY || !hasZ) {
       SERIAL_ERROR_START;
       SERIAL_ERRORLNPGM(MSG_ERR_M421_REQUIRES_XYZ);
-      MYSERIAL.flush();
       err = true;
     }
 
     if (x >= MESH_NUM_X_POINTS || y >= MESH_NUM_Y_POINTS) {
       SERIAL_ERROR_START;
       SERIAL_ERRORLNPGM(MSG_ERR_MESH_INDEX_OOB);
-      MYSERIAL.flush();
       err = true;
     }
 
@@ -5203,7 +5195,6 @@ inline void gcode_M428() {
       else {
         SERIAL_ERROR_START;
         SERIAL_ERRORLNPGM(MSG_ERR_M428_TOO_FAR);
-        MYSERIAL.flush();
         LCD_ALERTMESSAGEPGM("Err: Too far!");
         #if HAS_BUZZER
           enqueuecommands_P(PSTR("M300 S40 P200"));
@@ -5313,7 +5304,6 @@ inline void gcode_M503() {
     if (degHotend(active_extruder) < extrude_min_temp) {
       SERIAL_ERROR_START;
       SERIAL_ERRORLNPGM(MSG_TOO_COLD_FOR_M600);
-      MYSERIAL.flush();
       return;
     }
 
@@ -7185,7 +7175,6 @@ void Stop() {
     Stopped_gcode_LastN = gcode_LastN; // Save last g_code for restart
     SERIAL_ERROR_START;
     SERIAL_ERRORLNPGM(MSG_ERR_STOPPED);
-    MYSERIAL.flush();
     LCD_MESSAGEPGM(MSG_STOPPED);
   }
 }

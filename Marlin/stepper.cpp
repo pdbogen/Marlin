@@ -33,6 +33,7 @@
 #if HAS_DIGIPOTSS
   #include <SPI.h>
 #endif
+#include "master_communications.h"
 
 //===========================================================================
 //============================= public variables ============================
@@ -864,16 +865,16 @@ void st_init() {
       Z2_DIR_INIT;
     #endif
   #endif
-  #if HAS_E0_DIR && LOCAL_EXTRUDERS > 0
+  #if HAS_E0_DIR && EXTRUDERS > 0
     E0_DIR_INIT;
   #endif
-  #if HAS_E1_DIR && LOCAL_EXTRUDERS > 1
+  #if HAS_E1_DIR && EXTRUDERS > 1
     E1_DIR_INIT;
   #endif
-  #if HAS_E2_DIR && LOCAL_EXTRUDERS > 2
+  #if HAS_E2_DIR && EXTRUDERS > 2
     E2_DIR_INIT;
   #endif
-  #if HAS_E3_DIR && LOCAL_EXTRUDERS > 3
+  #if HAS_E3_DIR && EXTRUDERS > 3
     E3_DIR_INIT;
   #endif
 
@@ -1012,16 +1013,16 @@ void st_init() {
     #endif
     AXIS_INIT(z, Z, Z);
   #endif
-  #if HAS_E0_STEP && LOCAL_EXTRUDERS > 0
+  #if HAS_E0_STEP && EXTRUDERS > 0
     E_AXIS_INIT(0);
   #endif
-  #if HAS_E1_STEP && LOCAL_EXTRUDERS > 1
+  #if HAS_E1_STEP && EXTRUDERS > 1
     E_AXIS_INIT(1);
   #endif
-  #if HAS_E2_STEP && LOCAL_EXTRUDERS > 2
+  #if HAS_E2_STEP && EXTRUDERS > 2
     E_AXIS_INIT(2);
   #endif
-  #if HAS_E3_STEP && LOCAL_EXTRUDERS > 3
+  #if HAS_E3_STEP && EXTRUDERS > 3
     E_AXIS_INIT(3);
   #endif
 

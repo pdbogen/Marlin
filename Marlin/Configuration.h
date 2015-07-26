@@ -7,7 +7,7 @@
 #define MOTHERBOARD BOARD_SANGUINOLOLU_12
 
 #define SLAVE_SERIAL   Serial1
-#define SLAVE_BAUDRATE 115200
+#define SLAVE_BAUDRATE 250000
 
 //===========================================================================
 //============================= Getting Started =============================
@@ -67,7 +67,7 @@ Here are some standard links for getting your machine calibrated:
 
 // This determines the communication speed of the printer
 // :[2400,9600,19200,38400,57600,115200,250000]
-#define BAUDRATE 115200
+#define BAUDRATE 250000
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH

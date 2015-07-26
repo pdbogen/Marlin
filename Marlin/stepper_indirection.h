@@ -102,6 +102,10 @@
 #define Z2_ENABLE_WRITE(STATE) WRITE(Z2_ENABLE_PIN,STATE)
 #define Z2_ENABLE_READ READ(Z2_ENABLE_PIN)
 
+#if LOCAL_EXTRUDERS < EXTRUDERS
+	extern uint8_t remote_extruder_step;
+#endif
+
 // E0 motor
 #if LOCAL_EXTRUDERS > 0
 	#define E0_STEP_INIT SET_OUTPUT(E0_STEP_PIN)
@@ -116,17 +120,17 @@
 	#define E0_ENABLE_WRITE(STATE) WRITE(E0_ENABLE_PIN,STATE)
 	#define E0_ENABLE_READ READ(E0_ENABLE_PIN)
 #else
-	#define E0_STEP_INIT
-	#define E0_STEP_WRITE(STATE) slave_send_step(STATE);
-	#define E0_STEP_READ
+	#define E0_STEP_INIT while(0){}
+	#define E0_STEP_WRITE(STATE) remote_extruder_step=STATE; WRITE(SLAVE_STEP_PIN,STATE)
+	#define E0_STEP_READ remote_extruder_step
 
-	#define E0_DIR_INIT
-	#define E0_DIR_WRITE(STATE) slave_set_extruder_direction( -1, STATE );
-	#define E0_DIR_READ
+	#define E0_DIR_INIT while(0){}
+	#define E0_DIR_WRITE(STATE) slave_set_extruder_direction( 0-LOCAL_EXTRUDERS, STATE );
+	#define E0_DIR_READ remote_extruder_direction[0-LOCAL_EXTRUDERS]
 
-	#define E0_ENABLE_INIT
-	#define E0_ENABLE_WRITE(STATE) slave_set_extruder_enable( -1, STATE );
-	#define E0_ENABLE_READ
+	#define E0_ENABLE_INIT while(0){}
+	#define E0_ENABLE_WRITE(STATE) slave_set_extruder_enable( 0-LOCAL_EXTRUDERS, STATE );
+	#define E0_ENABLE_READ remote_extruder_enable[0-LOCAL_EXTRUDERS]
 #endif
 
 // E1 motor
@@ -143,17 +147,17 @@
 	#define E1_ENABLE_WRITE(STATE) WRITE(E1_ENABLE_PIN,STATE)
 	#define E1_ENABLE_READ READ(E1_ENABLE_PIN)
 #else
-	#define E1_STEP_INIT
-	#define E1_STEP_WRITE(STATE) slave_send_step(STATE);
-	#define E1_STEP_READ
+	#define E1_STEP_INIT while(0){}
+	#define E1_STEP_WRITE(STATE) remote_extruder_step=STATE; WRITE(SLAVE_STEP_PIN,STATE)
+	#define E1_STEP_READ remote_extruder_step
 
-	#define E1_DIR_INIT
-	#define E1_DIR_WRITE(STATE) slave_set_extruder_direction( 0, STATE );
-	#define E1_DIR_READ
+	#define E1_DIR_INIT while(0){}
+	#define E1_DIR_WRITE(STATE) slave_set_extruder_direction( 1-LOCAL_EXTRUDERS, STATE );
+	#define E1_DIR_READ remote_extruder_direction[1-LOCAL_EXTRUDERS]
 
-	#define E1_ENABLE_INIT
-	#define E1_ENABLE_WRITE(STATE) slave_set_extruder_enable( 0, STATE );
-	#define E1_ENABLE_READ
+	#define E1_ENABLE_INIT while(0){}
+	#define E1_ENABLE_WRITE(STATE) slave_set_extruder_enable( 1-LOCAL_EXTRUDERS, STATE );
+	#define E1_ENABLE_READ remote_extruder_enable[1-LOCAL_EXTRUDERS]
 #endif
 
 // E2 motor
@@ -170,17 +174,17 @@
 	#define E2_ENABLE_WRITE(STATE) WRITE(E2_ENABLE_PIN,STATE)
 	#define E2_ENABLE_READ READ(E2_ENABLE_PIN)
 #else
-	#define E2_STEP_INIT
-	#define E2_STEP_WRITE(STATE) slave_send_step(STATE);
-	#define E2_STEP_READ
+	#define E2_STEP_INIT while(0){}
+	#define E2_STEP_WRITE(STATE) remote_extruder_step=STATE; WRITE(SLAVE_STEP_PIN,STATE)
+	#define E2_STEP_READ remote_extruder_step
 
-	#define E2_DIR_INIT
-	#define E2_DIR_WRITE(STATE) slave_set_extruder_direction( 1, STATE );
-	#define E2_DIR_READ
+	#define E2_DIR_INIT while(0){}
+	#define E2_DIR_WRITE(STATE) slave_set_extruder_direction( 2-LOCAL_EXTRUDERS, STATE );
+	#define E2_DIR_READ remote_extruder_direction[2-LOCAL_EXTRUDERS]
 
-	#define E2_ENABLE_INIT
-	#define E2_ENABLE_WRITE(STATE) slave_set_extruder_enable( 1, STATE );
-	#define E2_ENABLE_READ
+	#define E2_ENABLE_INIT while(0){}
+	#define E2_ENABLE_WRITE(STATE) slave_set_extruder_enable( 2-LOCAL_EXTRUDERS, STATE );
+	#define E2_ENABLE_READ remote_extruder_enable[2-LOCAL_EXTRUDERS]
 #endif
 
 // E3 motor
@@ -197,17 +201,17 @@
 	#define E3_ENABLE_WRITE(STATE) WRITE(E3_ENABLE_PIN,STATE)
 	#define E3_ENABLE_READ READ(E3_ENABLE_PIN)
 #else
-	#define E3_STEP_INIT
-	#define E3_STEP_WRITE(STATE) slave_send_step(STATE);
-	#define E3_STEP_READ
+	#define E3_STEP_INIT while(0){}
+	#define E3_STEP_WRITE(STATE) remote_extruder_step=STATE; WRITE(SLAVE_STEP_PIN,STATE)
+	#define E3_STEP_READ remote_extruder_step
 
-	#define E3_DIR_INIT
-	#define E3_DIR_WRITE(STATE) slave_set_extruder_direction( 2, STATE );
-	#define E3_DIR_READ
+	#define E3_DIR_INIT while(0){}
+	#define E3_DIR_WRITE(STATE) slave_set_extruder_direction( 3-LOCAL_EXTRUDERS, STATE );
+	#define E3_DIR_READ remote_extruder_direction[3-LOCAL_EXTRUDERS]
 
-	#define E3_ENABLE_INIT
-	#define E3_ENABLE_WRITE(STATE) slave_set_extruder_enable( 2, STATE );
-	#define E3_ENABLE_READ
+	#define E3_ENABLE_INIT while(0){}
+	#define E3_ENABLE_WRITE(STATE) slave_set_extruder_enable( 3-LOCAL_EXTRUDERS, STATE );
+	#define E3_ENABLE_READ remote_extruder_enable[3-LOCAL_EXTRUDERS]
 #endif
 
 //////////////////////////////////

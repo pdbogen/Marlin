@@ -21,6 +21,7 @@
 
 #include "stepper_indirection.h"
 #include "Configuration.h"
+#include "master_communications.h"
 
 #if ENABLED(HAVE_TMCDRIVER)
   #include <SPI.h>

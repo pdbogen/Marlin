@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#ifndef MASTER_BAUD
+#define MASTER_BAUD SLAVE_BAUDRATE
+#endif
+
 #define LINK_SYN 0x01
 #define LINK_ESC 0x10
 #define ESC_SYN 0x53

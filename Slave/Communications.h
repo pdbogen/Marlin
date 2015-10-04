@@ -2,7 +2,6 @@
 #define COMMUNICATIONS_H
 
 #include "Configuration.h"
-
 #include <Packet.h>
 #include <stdint.h>
 

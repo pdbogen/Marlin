@@ -2,7 +2,7 @@
 #define PACKET_H
 
 #ifndef PACKET_QUEUE_SIZE
-#define PACKET_QUEUE_SIZE 10
+  #define PACKET_QUEUE_SIZE 10
 #endif
 
 #define CMD_ACK  0
@@ -21,7 +21,11 @@
 #include <string.h>
 
 #ifndef PACKET_TEST
-#include <HardwareSerial.h>
+  #ifndef MARLIN_SLAVE
+    #include "../../Marlin/Marlin.h"
+  #else
+    #include <HardwareSerial.h>
+  #endif
 #endif // PACKET_TEST
 
 struct extruder_temp {
@@ -62,7 +66,11 @@ struct Packet {
 	Packet( uint8_t command ) : command( command ) { sign(); }
 	Packet( uint8_t command, Payload payload ) : command( command ), payload( payload ) { sign(); }
 #ifndef PACKET_TEST
-	void print( HardwareSerial s ) const;
+  #ifndef MARLIN_SLAVE
+    void print( MarlinSerial s ) const;
+  #else
+    void print( HardwareSerial s ) const;
+  #endif
 #else // PACKET_TEST
 	void print() const;
 #endif // PACKET_TEST

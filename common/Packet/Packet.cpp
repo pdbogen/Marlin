@@ -87,11 +87,15 @@ void PacketQueue::dequeue() {
 }
 
 #ifndef PACKET_TEST
-#define PRINT(x) s.print( x );
-void Packet::print( HardwareSerial s ) const {
+  #define PRINT(x) s.print( x );
+  #ifndef MARLIN_SLAVE
+    void Packet::print( MarlinSerial s ) const {
+  #else
+    void Packet::print( HardwareSerial s ) const {
+  #endif
 #else
-#define PRINT(x) printf( "%s", x );
-void Packet::print() const {
+  #define PRINT(x) printf( "%s", x );
+  void Packet::print() const {
 #endif
 	char buf[64];
 	sprintf( buf, "%02x | ", command );

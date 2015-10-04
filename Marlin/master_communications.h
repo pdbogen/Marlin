@@ -1,7 +1,7 @@
 #ifndef _MASTER_COMMUNICATIONS
 #define _MASTER_COMMUNICATIONS
 
-#include <HardwareSerial.h>
+#include "Marlin.h"
 #include "Communications.h"
 #include "Configuration.h"
 #include <stdint.h>

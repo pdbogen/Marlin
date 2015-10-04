@@ -70,26 +70,28 @@
 // is the index of the location from which to read.
 #define RX_BUFFER_SIZE 128
 
-
 struct ring_buffer {
   unsigned char buffer[RX_BUFFER_SIZE];
   int head;
   int tail;
+  FORCE_INLINE void store_char(unsigned char c) {
+    int i = (unsigned int)(head + 1) % RX_BUFFER_SIZE;
+    if (i != tail) {
+      buffer[head] = c;
+      head = i;
+    }
+  }
 };
 
-#if UART_PRESENT(SERIAL_PORT)
-  extern ring_buffer rx_buffer;
-#endif
-
 class MarlinSerial { //: public Stream
-
   public:
-    MarlinSerial();
+    MarlinSerial(uint8_t port) : port(port) {};
     void begin(long);
     void end();
     int peek(void);
     int read(void);
     void flush(void);
+    ring_buffer rx_buffer;
 
     FORCE_INLINE int available(void) {
       return (unsigned int)(RX_BUFFER_SIZE + rx_buffer.head - rx_buffer.tail) % RX_BUFFER_SIZE;
@@ -118,6 +120,7 @@ class MarlinSerial { //: public Stream
     }
 
   private:
+    uint8_t port;
     void printNumber(unsigned long, uint8_t);
     void printFloat(double, uint8_t);
 
@@ -148,6 +151,19 @@ class MarlinSerial { //: public Stream
 };
 
 extern MarlinSerial customizedSerial;
+
+#if UART_PRESENT(1)
+  extern MarlinSerial customizedSerial1;
+#endif // UART_PRESENT(1)
+
+#if UART_PRESENT(2)
+  extern MarlinSerial customizedSerial2;
+#endif // UART_PRESENT(2)
+
+#if UART_PRESENT(3)
+  extern MarlinSerial customizedSerial3;
+#endif // UART_PRESENT(3)
+
 #endif // !USBCON
 
 // Use the UART for Bluetooth in AT90USB configurations
@@ -155,4 +171,4 @@ extern MarlinSerial customizedSerial;
   extern HardwareSerial bluetoothSerial;
 #endif
 
-#endif
+#endif // MarlinSerial_h

@@ -28,37 +28,41 @@
 // this is so I can support Attiny series and any other chip without a UART
 #if defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(UBRR2H) || defined(UBRR3H)
 
-#if UART_PRESENT(SERIAL_PORT)
-  ring_buffer rx_buffer  =  { { 0 }, 0, 0 };
+#if UART_PRESENT(0)
+  #if defined(M_USARTx_RX_vect)
+    SIGNAL(M_USARTx_RX_vect(0)) {
+      unsigned char c  =  M_UDRx(0);
+      customizedSerial.rx_buffer.store_char(c);
+    }
+  #endif
 #endif
 
-FORCE_INLINE void store_char(unsigned char c) {
-  int i = (unsigned int)(rx_buffer.head + 1) % RX_BUFFER_SIZE;
-
-  // if we should be storing the received character into the location
-  // just before the tail (meaning that the head would advance to the
-  // current location of the tail), we're about to overflow the buffer
-  // and so we don't write the character or advance the head.
-  if (i != rx_buffer.tail) {
-    rx_buffer.buffer[rx_buffer.head] = c;
-    rx_buffer.head = i;
-  }
-}
-
-
-//#elif defined(SIG_USART_RECV)
-#if defined(M_USARTx_RX_vect)
-  // fixed by Mark Sproul this is on the 644/644p
-  //SIGNAL(SIG_USART_RECV)
-  SIGNAL(M_USARTx_RX_vect(SERIAL_PORT)) {
-    unsigned char c  =  M_UDRx(SERIAL_PORT);
-    store_char(c);
-  }
+#if UART_PRESENT(1)
+  #if defined(M_USARTx_RX_vect)
+    SIGNAL(M_USARTx_RX_vect(1)) {
+      unsigned char c  =  M_UDRx(1);
+      customizedSerial1.rx_buffer.store_char(c);
+    }
+  #endif
 #endif
 
-// Constructors ////////////////////////////////////////////////////////////////
+#if UART_PRESENT(2)
+  #if defined(M_USARTx_RX_vect)
+    SIGNAL(M_USARTx_RX_vect(2)) {
+      unsigned char c  =  M_UDRx(2);
+      customizedSerial2.rx_buffer.store_char(c);
+    }
+  #endif
+#endif
 
-MarlinSerial::MarlinSerial() { }
+#if UART_PRESENT(3)
+  #if defined(M_USARTx_RX_vect)
+    SIGNAL(M_USARTx_RX_vect(3)) {
+      unsigned char c  =  M_UDRx(3);
+      customizedSerial3.rx_buffer.store_char(c);
+    }
+  #endif
+#endif
 
 // Public Methods //////////////////////////////////////////////////////////////
 
@@ -75,27 +79,59 @@ void MarlinSerial::begin(long baud) {
     }
   #endif
 
-  if (useU2X) {
-    M_UCSRxA(SERIAL_PORT) = BIT(M_U2Xx(SERIAL_PORT));
-    baud_setting = (F_CPU / 4 / baud - 1) / 2;
-  } else {
-    M_UCSRxA(SERIAL_PORT) = 0;
-    baud_setting = (F_CPU / 8 / baud - 1) / 2;
+  #define BEGIN_PORT(p) \
+    case p: \
+      if (useU2X) { \
+        M_UCSRxA( p ) = BIT(M_U2Xx( p )); \
+        baud_setting = (F_CPU / 4 / baud - 1) / 2; \
+      } else { \
+        M_UCSRxA( p ) = 0; \
+        baud_setting = (F_CPU / 8 / baud - 1) / 2; \
+      } \
+      M_UBRRxH( p ) = baud_setting >> 8; \
+      M_UBRRxL( p ) = baud_setting; \
+      sbi(M_UCSRxB( p ), M_RXENx( p )); \
+      sbi(M_UCSRxB( p ), M_TXENx( p )); \
+      sbi(M_UCSRxB( p ), M_RXCIEx( p )); \
+      break;
+
+  switch(port) {
+    #if UART_PRESENT(0)
+      BEGIN_PORT(0)
+    #endif
+    #if UART_PRESENT(1)
+      BEGIN_PORT(1)
+    #endif
+    #if UART_PRESENT(2)
+      BEGIN_PORT(2)
+    #endif
+    #if UART_PRESENT(3)
+      BEGIN_PORT(3)
+    #endif
   }
-
-  // assign the baud_setting, a.k.a. ubbr (USART Baud Rate Register)
-  M_UBRRxH(SERIAL_PORT) = baud_setting >> 8;
-  M_UBRRxL(SERIAL_PORT) = baud_setting;
-
-  sbi(M_UCSRxB(SERIAL_PORT), M_RXENx(SERIAL_PORT));
-  sbi(M_UCSRxB(SERIAL_PORT), M_TXENx(SERIAL_PORT));
-  sbi(M_UCSRxB(SERIAL_PORT), M_RXCIEx(SERIAL_PORT));
 }
 
 void MarlinSerial::end() {
-  cbi(M_UCSRxB(SERIAL_PORT), M_RXENx(SERIAL_PORT));
-  cbi(M_UCSRxB(SERIAL_PORT), M_TXENx(SERIAL_PORT));
-  cbi(M_UCSRxB(SERIAL_PORT), M_RXCIEx(SERIAL_PORT));
+  #define END_PORT(p) \
+    case p: \
+      cbi(M_UCSRxB(p), M_RXENx(p)); \
+      cbi(M_UCSRxB(p), M_TXENx(p)); \
+      cbi(M_UCSRxB(p), M_RXCIEx(p)); \
+      break;
+  switch(port) {
+    #if UART_PRESENT(0)
+      END_PORT(0)
+    #endif
+    #if UART_PRESENT(1)
+      END_PORT(1)
+    #endif
+    #if UART_PRESENT(2)
+      END_PORT(2)
+    #endif
+    #if UART_PRESENT(3)
+      END_PORT(3)
+    #endif
+  }
 }
 
 
@@ -283,7 +319,21 @@ void MarlinSerial::printFloat(double number, uint8_t digits) {
 // Preinstantiate Objects //////////////////////////////////////////////////////
 
 
-MarlinSerial customizedSerial;
+#if UART_PRESENT(0)
+  MarlinSerial customizedSerial(0);
+#endif
+
+#if UART_PRESENT(1)
+  MarlinSerial customizedSerial1(1);
+#endif
+
+#if UART_PRESENT(2)
+  MarlinSerial customizedSerial2(2);
+#endif
+
+#if UART_PRESENT(3)
+  MarlinSerial customizedSerial3(3);
+#endif
 
 #endif // whole file
 #endif // !USBCON

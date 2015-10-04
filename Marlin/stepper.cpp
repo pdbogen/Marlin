@@ -647,6 +647,15 @@ ISR(TIMER1_COMPA_vect) {
     for (int8_t i = 0; i < step_loops; i++) {
       #ifndef USBCON
         customizedSerial.checkRx(); // Check for serial chars.
+        #if UART_PRESENT(1)
+          customizedSerial1.checkRx();
+        #endif
+        #if UART_PRESENT(2)
+          customizedSerial2.checkRx();
+        #endif
+        #if UART_PRESENT(3)
+          customizedSerial3.checkRx();
+        #endif
       #endif
 
       #if ENABLED(ADVANCE)

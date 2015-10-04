@@ -214,9 +214,7 @@
 
   #include "pins.h"
 
-  // Master/Slave boards require HardwareSerial, so we can't disable it if we
-  // have remote extruders.
-  #if !defined(USBCON) && EXTRUDERS == LOCAL_EXTRUDERS
+  #if !defined(USBCON)
     #define HardwareSerial_h // trick to disable the standard HWserial
   #endif
 

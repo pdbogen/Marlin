@@ -6,7 +6,7 @@
 
 #define MOTHERBOARD BOARD_SANGUINOLOLU_12
 
-#define SLAVE_SERIAL   Serial1
+#define SLAVE_SERIAL   customizedSerial1
 #define SLAVE_BAUDRATE 250000
 
 //===========================================================================

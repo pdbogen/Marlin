@@ -5372,13 +5372,10 @@ inline void gcode_M503() {
           lcd_quick_feedback();
           next_tick = ms + 2500; // feedback every 2.5s while waiting
         }
-        serialEvent1();
         network_loop();
         manage_heater();
         manage_inactivity(true);
         lcd_update();
-        serialEvent1();
-        network_loop();
       #else
         current_position[E_AXIS] += AUTO_FILAMENT_CHANGE_LENGTH;
         destination[E_AXIS] = current_position[E_AXIS];
@@ -6897,7 +6894,6 @@ void disable_all_steppers() {
  * Standard idle routine keeps the machine alive
  */
 void idle() {
-  serialEvent1();
   network_loop();
   manage_heater();
   manage_inactivity();

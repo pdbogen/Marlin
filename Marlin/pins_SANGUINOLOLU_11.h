@@ -187,5 +187,6 @@
   #define BTN_ENC               16
 
   #define SD_DETECT_PIN         -1
-
 #endif // MAKRPANEL
+
+#define SERVO0_PIN 30

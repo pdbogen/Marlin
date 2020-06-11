@@ -611,7 +611,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {95.3,92.7,4000,144}  // default steps per unit for Ultimaker
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100.151,92.101,4000,144}  // default steps per unit for Ultimaker
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -883,7 +883,7 @@
 // @section machine
 
 // The size of the print bed
-#define X_BED_SIZE 170
+#define X_BED_SIZE 190
 #define Y_BED_SIZE 190
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
@@ -1066,8 +1066,8 @@
 
   //#define MESH_EDIT_GFX_OVERLAY   // Display a graphics overlay while editing the mesh
 
-  #define MESH_INSET 1              // Set Mesh bounds as an inset region of the bed
-  #define GRID_MAX_POINTS_X 5      // Don't use more than 15 points per axis, implementation limited.
+  #define MESH_INSET 5              // Set Mesh bounds as an inset region of the bed
+  #define GRID_MAX_POINTS_X 7      // Don't use more than 15 points per axis, implementation limited.
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   #define UBL_MESH_EDIT_MOVES_Z     // Sophisticated users prefer no movement of nozzle
@@ -1096,11 +1096,11 @@
  */
 #if ENABLED(AUTO_BED_LEVELING_3POINT) || ENABLED(AUTO_BED_LEVELING_UBL)
   #define PROBE_PT_1_X 10
-  #define PROBE_PT_1_Y 50
-  #define PROBE_PT_2_X 80
-  #define PROBE_PT_2_Y 107
-  #define PROBE_PT_3_X 160
-  #define PROBE_PT_3_Y 165
+  #define PROBE_PT_1_Y 30
+  #define PROBE_PT_2_X 10
+  #define PROBE_PT_2_Y 130
+  #define PROBE_PT_3_X 180
+  #define PROBE_PT_3_Y 100
 #endif
 
 /**
